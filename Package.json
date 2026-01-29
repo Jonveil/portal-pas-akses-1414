@@ -1,0 +1,18 @@
+{
+  "name": "portal-pas-akses-1414",
+  "version": "1.0.0",
+  "description": "App World ID + Token Gating untuk pemegang token 1414 🇲🇾",
+  "main": "Aplikasi.jsx",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}
