@@ -7,39 +7,39 @@ function Utility({ address }) {
   function handleClaim(e) {
     e.preventDefault();
     if (name.trim() === "") {
-      alert("Sila isi nama anda.");
+      alert("Please enter your name.");
       return;
     }
     setClaimed(true);
-    alert("✅ Tuntutan harian berjaya!");
+    alert("✅ Daily claim successful!");
   }
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>🔧 Utility Pemegang Token</h2>
-      <p>Alamat wallet anda: <strong>{address}</strong></p>
-
+    <div style={{ padding: "1rem", border: "1px solid #333", borderRadius: "10px", marginTop: "20px", backgroundColor: "#111" }}>
+      <h2>🔧 Token Holder Utility</h2>
+      
       {!claimed ? (
         <form onSubmit={handleClaim}>
-          <label>Nama anda:</label><br />
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Contoh: Burung"
-            style={{ marginBottom: "0.5rem", width: "100%" }}
+            placeholder="Enter your name to claim"
+            style={{ padding: "10px", width: "80%", borderRadius: "5px", border: "1px solid #444", marginBottom: "10px" }}
           /><br />
-          <button type="submit">🪙 Tuntutan Harian</button>
+          <button type="submit" style={{ padding: "10px 20px", background: "#FFD700", color: "black", fontWeight: "bold", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+            🪙 Claim Daily Rewards
+          </button>
         </form>
       ) : (
-        <p>✅ Anda telah menuntut hari ini. Jumpa esok!</p>
+        <p style={{ color: "#4CAF50" }}>✅ You have claimed today's reward. See you tomorrow!</p>
       )}
 
-      <hr />
-      <p>📎 Pautan Eksklusif:</p>
-      <ul>
-        <li><a href="https://t.me/akses1414" target="_blank">Telegram Komuniti</a></li>
-        <li><a href="https://docs.google.com/forms/d/e/akses1414" target="_blank">Borang Whitelist</a></li>
+      <hr style={{ borderColor: "#333", margin: "20px 0" }} />
+      <p>📎 <strong>Exclusive Links:</strong></p>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        <li style={{ marginBottom: "10px" }}><a href="https://t.me/akses1414" target="_blank" style={{ color: "#3498db", textDecoration: "none" }}>✈️ Community Telegram</a></li>
+        <li><a href="https://docs.google.com/forms/d/e/akses1414" target="_blank" style={{ color: "#3498db", textDecoration: "none" }}>📝 Whitelist Form</a></li>
       </ul>
     </div>
   );
