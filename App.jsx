@@ -1,49 +1,42 @@
-import React, { useState } from "react";
-import Utility from "./Utility";
-import Governance from "./Governance";
+import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
+import KodUtility from "./KodUtility.jsx";
+import TadbirUrus from "./TadbirUrus.jsx";
 
 function App() {
-  const [address, setAddress] = useState("");
-  const [verified, setVerified] = useState(false);
-  const [tokenBalance, setTokenBalance] = useState(0);
-  const [accessGranted, setAccessGranted] = useState(false);
+  const handleVerify = async (proof) => {
+    const res = await fetch("/api/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(proof),
+    });
 
-  // Simulasi pengesahan World ID
-  function handleWorldIDVerify() {
-    setVerified(true);
-    alert("✅ Identiti disahkan melalui World ID");
-  }
+    if (!res.ok) throw new Error("Verification failed");
+  };
 
-  // Simulasi sambungan wallet dan semakan token
-  function handleConnectWallet() {
-    const dummyAddress = "0x1414...BURUNG";
-    const dummyBalance = 1;
-    setAddress(dummyAddress);
-    setTokenBalance(dummyBalance);
-
-    if (verified && dummyBalance >= 1) {
-      setAccessGranted(true);
-    } else {
-      alert("❌ Perlu World ID + 1 token 1414");
-    }
-  }
+  const onSuccess = () => {
+    alert("World ID berjaya disahkan!");
+  };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>🚪 Portal Pas Akses 1414</h1>
+    <div style={{ padding: 20 }}>
+      <h1>Portal Pas Akses 1414</h1>
 
-      {!accessGranted ? (
-        <div>
-          <button onClick={handleWorldIDVerify}>🔐 Sahkan World ID</button><br /><br />
-          <button onClick={handleConnectWallet}>🔗 Sambung Wallet</button>
-        </div>
-      ) : (
-        <div>
-          <Utility address={address} />
-          <hr />
-          <Governance />
-        </div>
-      )}
+      <IDKitWidget
+        app_id="app_7147fcca529b9e4c5181157a35"
+        action="portal-akses-1414"
+        verification_level={VerificationLevel.Orb}
+        handleVerify={handleVerify}
+        onSuccess={onSuccess}
+      >
+        {({ open }) => (
+          <button onClick={open}>
+            Sahkan Identiti dengan World ID
+          </button>
+        )}
+      </IDKitWidget>
+
+      <KodUtility />
+      <TadbirUrus />
     </div>
   );
 }
