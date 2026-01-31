@@ -1,3 +1,4 @@
+import tokenImage from './token.jpg';
 import React, { useState, useEffect } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
