@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from 'react';
-// Kita guna semula fail lama tapi isi dalam dah baru
+import { ethers } from "ethers"; // Kita panggil library blockchain
 import LinksPage from "./KodUtility"; 
 import IdeasPage from "./Governance";
 import tokenImage from './alduin.jpg'; 
 
+// 🔥 INI ALAMAT KONTRAK TUAN (JANGAN UBAH) 🔥
+const TOKEN_ADDRESS = "0x5Af2204515d8A092Af4482607Cc0c6A17aafF4ba";
+
+// Ini "Kunci" untuk baca baki token (ABI Standard)
+const TOKEN_ABI = [
+  "function balanceOf(address owner) view returns (uint256)",
+  "function decimals() view returns (uint8)"
+];
+
+// Info World Chain (Untuk auto-tukar network)
+const WORLD_CHAIN_ID = 480; // ID World Chain
+const WORLD_CHAIN_HEX = "0x1e0"; // 480 dalam bahasa robot (Hex)
+
 function App() {
-  const [activeTab, setActiveTab] = useState('home'); // 'home' (kiri), 'ideas' (tengah), 'soon' (kanan)
+  const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
   
-  const userTokenBalance = 10.0; 
-  const minRequired = 1.0;
-  const hasEnoughTokens = userTokenBalance >= minRequired;
+  // State untuk Wallet
+  const [walletAddress, setWalletAddress] = useState("");
+  const [balance, setBalance] = useState("0.0");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
+  const minRequired = 1.0;
+  const hasEnoughTokens = parseFloat(balance) >= minRequired;
+
+  // Setup Skrin Hitam
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
@@ -20,16 +39,83 @@ function App() {
     document.getElementById('root').style.height = "100%";
   }, []);
 
-  const handleEnterPortal = () => {
-    if (hasEnoughTokens) {
-      setIsVerified(true);
-      // Bila masuk, terus pergi ke tab 'home' (Links)
-      setActiveTab('home'); 
-    } else {
-       alert("Insufficient Balance.");
+  // --- FUNGSI SAMBUNG WALLET (REAL) ---
+  const connectWallet = async () => {
+    setErrorMsg("");
+    setLoading(true);
+
+    // 1. Check ada wallet tak? (Metamask / World App Browser)
+    if (!window.ethereum) {
+      setLoading(false);
+      return alert("Sila buka dalam Metamask Browser atau World App!");
+    }
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      
+      // 2. Minta izin akses wallet
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      setWalletAddress(address);
+
+      // 3. Pastikan user guna WORLD CHAIN
+      const { chainId } = await provider.getNetwork();
+      if (chainId !== WORLD_CHAIN_ID) {
+        try {
+          // Cuba tukar network automatik
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: WORLD_CHAIN_HEX }],
+          });
+        } catch (switchError) {
+          // Kalau World Chain tiada dalam list, kita tambah
+          if (switchError.code === 4902) {
+             await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: WORLD_CHAIN_HEX,
+                chainName: 'World Chain',
+                nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+                rpcUrls: ['https://worldchain-mainnet.g.alchemy.com/public'],
+                blockExplorerUrls: ['https://worldscan.org']
+              }],
+            });
+          } else {
+            throw new Error("Sila tukar network ke World Chain!");
+          }
+        }
+        // Lepas tukar, reload page supaya refresh
+        window.location.reload(); 
+        return;
+      }
+
+      // 4. BACA BAKI TOKEN SEBENAR DARI BLOCKCHAIN
+      const tokenContract = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, provider);
+      const rawBalance = await tokenContract.balanceOf(address);
+      // Format dari Wei ke nombor biasa (18 decimals)
+      const formattedBalance = ethers.utils.formatUnits(rawBalance, 18);
+      
+      setBalance(formattedBalance);
+      setLoading(false);
+
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Gagal sambung: " + (err.message || "Unknown Error"));
+      setLoading(false);
     }
   };
 
+  const handleEnterPortal = () => {
+    if (hasEnoughTokens) {
+      setIsVerified(true);
+      setActiveTab('home'); 
+    } else {
+       alert("❌ Harap Maaf. Anda perlukan sekurang-kurangnya 1 Token 1414.");
+    }
+  };
+
+  // --- STYLES ---
   const styles = {
     mainContainer: {
       backgroundColor: '#000000',
@@ -41,7 +127,6 @@ function App() {
       userSelect: 'none',
       WebkitUserSelect: 'none',
     },
-    // Login Screen Style
     loginWrapper: {
       display: 'flex',
       flexDirection: 'column',
@@ -68,7 +153,6 @@ function App() {
       letterSpacing: '2px',
       margin: '0',
     },
-    // Bottom Nav Style
     bottomNav: {
       position: 'fixed',
       bottom: 0,
@@ -80,11 +164,11 @@ function App() {
       justifyContent: 'space-around',
       padding: '15px 0',
       zIndex: 1000,
-      paddingBottom: '20px' // Jarak sikit untuk iPhone baru
+      paddingBottom: '20px' 
     },
     navItem: {
       color: '#555',
-      fontSize: '10px', // Tulisan kecil sikit
+      fontSize: '10px', 
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -99,13 +183,12 @@ function App() {
       padding: '20px',
       paddingTop: '40px',
       maxWidth: '600px',
-      margin: '0 auto' // Centerkan kalau skrin besar
+      margin: '0 auto' 
     }
   };
 
-  // --- LOGIC TUKAR HALAMAN ---
+  // --- RENDER ---
   const renderContent = () => {
-    // Kalau belum login, tunjuk pintu pagar (Login Screen)
     if (!isVerified) {
       return (
         <div style={styles.loginWrapper}>
@@ -113,46 +196,68 @@ function App() {
           <h1 style={styles.title}>Portal 1414</h1>
           <p style={{color:'#888', fontSize:'13px'}}>Exclusive Token Gated Access</p>
 
+          {/* KOTAK STATUS WALLET */}
           <div style={{background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '25px', width: '100%', maxWidth: '320px', margin: '30px 0'}}>
-            <div style={{color: '#666', fontSize: '11px', textTransform: 'uppercase'}}>HOLDINGS</div>
-            <div style={{fontSize: '42px', fontWeight: '800', margin: '5px 0', color: 'white'}}>{userTokenBalance.toFixed(1)}</div>
-            <div style={{color: '#ff0000', fontSize: '14px', fontWeight: 'bold'}}>1414 TOKEN</div>
             
-            <div style={{marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #222'}}>
-               {hasEnoughTokens ? 
-                 <span style={{color: '#00ff00', fontSize:'12px', fontWeight:'bold'}}>✅ ELIGIBLE (≥{minRequired})</span> : 
-                 <span style={{color: 'red'}}>❌ INELIGIBLE</span>
-               }
+            {!walletAddress ? (
+               <p style={{color:'#888', fontSize:'14px'}}>Sila sambung wallet untuk semak kelayakan.</p>
+            ) : (
+               <>
+                <div style={{color: '#666', fontSize: '11px', textTransform: 'uppercase'}}>YOUR BALANCE</div>
+                <div style={{fontSize: '32px', fontWeight: '800', margin: '5px 0', color: 'white'}}>
+                  {parseFloat(balance).toFixed(2)}
+                </div>
+                <div style={{color: '#ff0000', fontSize: '14px', fontWeight: 'bold'}}>1414 TOKEN</div>
+                
+                <div style={{marginTop: '15px', paddingTop: '10px', borderTop: '1px solid #222', fontSize:'12px'}}>
+                  Wallet: {walletAddress.slice(0,6)}...{walletAddress.slice(-4)}
+                </div>
+               </>
+            )}
+
+            <div style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #222'}}>
+               {walletAddress ? (
+                  hasEnoughTokens ? 
+                   <span style={{color: '#00ff00', fontSize:'12px', fontWeight:'bold'}}>✅ ELIGIBLE (≥{minRequired})</span> : 
+                   <span style={{color: 'red', fontSize:'12px'}}>❌ INELIGIBLE (Need ≥{minRequired})</span>
+               ) : (
+                  <span style={{color: '#555', fontSize:'12px'}}>🔴 Not Connected</span>
+               )}
             </div>
           </div>
 
-          {hasEnoughTokens ? (
+          {/* BUTANG BERTUKAR FUNGSI */}
+          {!walletAddress ? (
+             <button onClick={connectWallet} disabled={loading} style={{background: '#333', color: 'white', border: '1px solid #555', padding: '18px 0', borderRadius: '50px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', width: '100%', maxWidth: '300px'}}>
+               {loading ? "Connecting..." : "🔌 CONNECT WALLET"}
+             </button>
+          ) : hasEnoughTokens ? (
             <button onClick={handleEnterPortal} style={{background: '#ff0000', color: 'white', border: 'none', padding: '18px 0', borderRadius: '50px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 0 25px rgba(255, 0, 0, 0.4)'}}>
               ENTER PORTAL
             </button>
           ) : (
-            <div style={{color:'#555'}}>Purchase tokens to enter.</div>
+            <div style={{color:'red', border:'1px solid red', padding:'10px', borderRadius:'10px'}}>
+              ❌ Beli token 1414 di PUF untuk masuk!
+            </div>
           )}
+          
+          {errorMsg && <p style={{color:'red', fontSize:'12px', marginTop:'10px'}}>{errorMsg}</p>}
+
         </div>
       );
     }
 
-    // Kalau DAH login, tunjuk content berdasarkan Tab
     switch (activeTab) {
-      case 'home':
-        return <div style={styles.pageContent}><LinksPage /></div>; // Ini KodUtility
-      case 'ideas':
-        return <div style={styles.pageContent}><IdeasPage /></div>; // Ini Governance
-      case 'soon':
-        return (
+      case 'home': return <div style={styles.pageContent}><LinksPage /></div>;
+      case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
+      case 'soon': return (
           <div style={{...styles.pageContent, textAlign:'center', paddingTop:'100px'}}>
              <h1 style={{fontSize:'50px', margin:0}}>🚧</h1>
              <h2 style={{color:'white'}}>COMING SOON</h2>
-             <p style={{color:'#666'}}>More features are being built.</p>
+             <p style={{color:'#666'}}>More features under construction.</p>
           </div>
         );
-      default:
-        return null;
+      default: return null;
     }
   };
 
@@ -160,25 +265,16 @@ function App() {
     <div style={styles.mainContainer}>
       {renderContent()}
 
-      {/* MENU BAWAH - Hanya muncul lepas login */}
       {isVerified && (
         <div style={styles.bottomNav}>
-          {/* TAB 1: HOME (Links) */}
           <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}>
-             <span style={{fontSize:'22px', marginBottom:'5px'}}>🏠</span> 
-             HOME
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>🏠</span> HOME
           </div>
-          
-          {/* TAB 2: IDEAS (Tengah) */}
           <div style={activeTab === 'ideas' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('ideas')}>
-             <span style={{fontSize:'22px', marginBottom:'5px'}}>💡</span> 
-             IDEAS
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>💡</span> IDEAS
           </div>
-
-          {/* TAB 3: SOON (Kanan) */}
           <div style={activeTab === 'soon' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('soon')}>
-             <span style={{fontSize:'22px', marginBottom:'5px'}}>🚀</span> 
-             SOON
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>🚀</span> SOON
           </div>
         </div>
       )}
