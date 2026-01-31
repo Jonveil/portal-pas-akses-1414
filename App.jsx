@@ -1,10 +1,10 @@
-import tokenImage from './token.jpg';
 import React, { useState, useEffect } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
 
 // 🔥 SAYA DAH TUKAR BARIS NI UNTUK IKUT NAMA FAIL PANJANG TUAN 🔥
-import tokenImage from './FB_IMG_1769066722728.jpg'; 
+import tokenImage from './token.jpg';
+
 
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
