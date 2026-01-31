@@ -1,30 +1,36 @@
 import React, { useState } from "react";
 
 function Governance() {
-  const [vote, setVote] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [voted, setVoted] = useState(false);
 
-  const handleVote = (choice) => {
-    setVote(choice);
-    setSubmitted(true);
-    alert(`✅ You voted: ${choice}`);
+  const boxStyle = {
+    border: "1px solid #333",
+    borderRadius: "12px",
+    padding: "20px",
+    marginTop: "20px",
+    width: "90%",
+    maxWidth: "350px",
+    backgroundColor: "#111",
+    textAlign: "left"
   };
 
   return (
-    <div style={{ padding: "1rem", border: "1px solid #333", borderRadius: "10px", marginTop: "20px", backgroundColor: "#111" }}>
-      <h2>🗳️ Community Governance</h2>
-      <p style={{ color: "#aaa" }}>Proposal: Should we enable direct NFT minting in the app?</p>
+    <div style={boxStyle}>
+      <h3 style={{ color: "#ff0000", marginTop: 0 }}>🗳️ Community Vote</h3>
+      <p style={{color: "#ccc", fontSize: "14px"}}>Proposal: Should we launch an NFT collection next month?</p>
 
-      {!submitted ? (
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-          <button onClick={() => handleVote("Yes")} style={{ padding: "10px 20px", cursor: "pointer", background: "green", color: "white", border: "none", borderRadius: "5px" }}>✅ Yes</button>
-          <button onClick={() => handleVote("No")} style={{ padding: "10px 20px", cursor: "pointer", background: "red", color: "white", border: "none", borderRadius: "5px" }}>❌ No</button>
+      {!voted ? (
+        <div style={{display: "flex", gap: "10px"}}>
+          <button onClick={() => setVoted(true)} style={{flex: 1, padding: "10px", background: "#1a1a1a", border: "1px solid #ff0000", color: "#ff0000", borderRadius: "5px", cursor: "pointer"}}>
+            YES
+          </button>
+          <button onClick={() => setVoted(true)} style={{flex: 1, padding: "10px", background: "#1a1a1a", border: "1px solid #555", color: "#aaa", borderRadius: "5px", cursor: "pointer"}}>
+            NO
+          </button>
         </div>
       ) : (
-        <p>Thank you for voting: <strong>{vote}</strong></p>
+        <p style={{color: "#ff0000"}}>Thank you for voting! 🇲🇾</p>
       )}
-      
-      <p style={{ fontSize: "12px", color: "#666", marginTop: "10px" }}>💡 Votes are currently tallied manually.</p>
     </div>
   );
 }
