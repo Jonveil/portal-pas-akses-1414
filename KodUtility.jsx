@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
 
-// 🔥 ADMIN CONFIGURATION 🔥
-const ADMIN_WALLET = "0x47f77561f299bbb55aaca003f76c4b9519e16c02"; 
-
-function Utility({ currentUser }) { 
+function Utility() { 
   const [ideas, setIdeas] = useState([]);
   const [newIdea, setNewIdea] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
-  
-  // STATE BARU: Untuk simpan mesej error (ganti alert popup)
   const [formMsg, setFormMsg] = useState(""); 
+  
+  // State untuk Identiti
+  const [myId, setMyId] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const isAdmin = currentUser && ADMIN_WALLET && currentUser.toLowerCase() === ADMIN_WALLET.toLowerCase();
-  const hasPosted = ideas.some(idea => idea.ownerId && currentUser && idea.ownerId.toLowerCase() === currentUser.toLowerCase());
-
+  // 1. SETUP IDENTITY (Bila app mula)
   useEffect(() => {
+    // Check if user has an ID stored in phone
+    let storedId = localStorage.getItem("portal_user_id");
+    if (!storedId) {
+      storedId = "user_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+      localStorage.setItem("portal_user_id", storedId);
+    }
+    setMyId(storedId);
+
+    // Check if user is already Admin
+    const adminStatus = localStorage.getItem("portal_is_admin");
+    if (adminStatus === "true") {
+      setIsAdmin(true);
+    }
+
+    // Load Data
     const savedIdeas = localStorage.getItem("my_ideas");
     if (savedIdeas) {
       setIdeas(JSON.parse(savedIdeas));
@@ -26,9 +38,13 @@ function Utility({ currentUser }) {
     }
   }, []);
 
+  // Save Data
   useEffect(() => {
     localStorage.setItem("my_ideas", JSON.stringify(ideas));
   }, [ideas]);
+
+  // Check 1 Post Rule
+  const hasPosted = ideas.some(idea => idea.ownerId === myId);
 
   const toggleLike = (id) => {
     const updatedIdeas = ideas.map((idea) => {
@@ -42,15 +58,18 @@ function Utility({ currentUser }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormMsg(""); // Reset mesej
+    setFormMsg(""); 
 
-    // 1. Check Login (TANPA POPUP)
-    if (!currentUser) {
-       setFormMsg("⚠️ Wallet not connected. Please connect ID first.");
+    // 🔥 BACKDOOR UNTUK JADI ADMIN 🔥
+    if (newIdea === "#admin1414") {
+       setIsAdmin(true);
+       localStorage.setItem("portal_is_admin", "true");
+       setFormMsg("🔓 ADMIN MODE ACTIVATED");
+       setNewIdea("");
        return;
     }
-    
-    // 2. Check 1 Post Rule
+
+    // Check Rule: 1 Post Per Person (Admin terkecuali)
     if (hasPosted && !isAdmin) {
        setFormMsg("⚠️ You already posted. Delete old idea first.");
        return;
@@ -63,14 +82,12 @@ function Utility({ currentUser }) {
       text: newIdea, 
       likes: 0, 
       liked: false,
-      ownerId: currentUser 
+      ownerId: myId // Cop ID phone pengguna
     };
 
     setIdeas([newItem, ...ideas]); 
     setNewIdea(""); 
     setFormMsg("✅ Idea submitted!");
-    
-    // Hilangkan mesej success lepas 3 saat
     setTimeout(() => setFormMsg(""), 3000);
   };
 
@@ -84,6 +101,7 @@ function Utility({ currentUser }) {
 
   const cancelDelete = () => setShowDeleteConfirm(null);
 
+  // Styles
   const boxStyle = { backgroundColor: "#111", border: "1px solid #333", borderRadius: "16px", padding: "20px", marginBottom: "20px", color: "white", textAlign: "left" };
   const linkStyle = { textDecoration: 'none', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px solid #222' };
 
@@ -104,7 +122,7 @@ function Utility({ currentUser }) {
         </div>
       )}
 
-      {/* LINKS SECTION */}
+      {/* OFFICIAL LINKS */}
       <div style={boxStyle}>
         <h3 style={{margin:'0 0 15px 0', color:'#ff0000', fontSize:'14px', textTransform:'uppercase'}}>🚀 OFFICIAL LINKS</h3>
         <a href="https://x.com/TarikNescafe" target="_blank" style={linkStyle}>
@@ -115,7 +133,7 @@ function Utility({ currentUser }) {
         </a>
       </div>
 
-      {/* CRYPTO SECTION */}
+      {/* EARN CRYPTO */}
       <div style={boxStyle}>
         <h3 style={{margin:'0 0 15px 0', color:'#ff0000', fontSize:'14px', textTransform:'uppercase'}}>💰 EARN CRYPTO</h3>
         <div style={{marginBottom:'15px'}}>
@@ -137,7 +155,7 @@ function Utility({ currentUser }) {
       {/* COMMUNITY VOICE */}
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'30px'}}>
          <h2 style={{color: '#ff0000', margin: 0, textTransform: 'uppercase', fontSize:'18px'}}>💡 Community Voice</h2>
-         {isAdmin && <span style={{fontSize:'10px', background:'red', padding:'2px 6px', borderRadius:'4px', color:'white'}}>ADMIN</span>}
+         {isAdmin && <span style={{fontSize:'10px', background:'red', padding:'2px 6px', borderRadius:'4px', color:'white'}}>ADMIN MODE</span>}
       </div>
       
       <p style={{color:'#666', fontSize:'12px', marginBottom:'10px'}}>
@@ -157,17 +175,9 @@ function Utility({ currentUser }) {
          <button type="submit" disabled={hasPosted && !isAdmin} style={{padding:'0 20px', borderRadius:'10px', background: (hasPosted && !isAdmin) ? '#333' : '#ff0000', color:'white', border:'none', fontWeight:'bold', fontSize:'20px'}}>+</button>
       </form>
 
-      {/* 🔥 MESEJ ERROR/SUCCESS DI SINI (BUKAN POPUP) 🔥 */}
+      {/* STATUS MESSAGE */}
       {formMsg && (
-        <div style={{
-            color: formMsg.includes("✅") ? '#00ff00' : '#ff4444', 
-            fontSize: '12px', 
-            marginBottom: '20px', 
-            padding: '10px', 
-            background: '#111', 
-            border: '1px dashed #333', 
-            borderRadius:'8px'
-        }}>
+        <div style={{color: formMsg.includes("✅") || formMsg.includes("🔓") ? '#00ff00' : '#ff4444', fontSize: '12px', marginBottom: '20px', padding: '10px', background: '#111', border: '1px dashed #333', borderRadius:'8px'}}>
            {formMsg}
         </div>
       )}
@@ -175,7 +185,9 @@ function Utility({ currentUser }) {
       {/* IDEA LIST */}
       <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
         {ideas.map((idea, index) => {
-          const isMine = currentUser && idea.ownerId && idea.ownerId.toLowerCase() === currentUser.toLowerCase();
+          // Check: Adakah ini idea saya?
+          const isMine = idea.ownerId === myId;
+          // Admin atau Owner boleh delete
           const canDelete = isMine || isAdmin;
 
           return (
@@ -184,9 +196,11 @@ function Utility({ currentUser }) {
                 <div style={{fontSize:'18px', fontWeight:'900', color: index === 0 ? '#ff0000' : '#444'}}>#{index + 1}</div>
                 <div style={{textAlign:'left', width:'100%'}}>
                    <div style={{color:'white', fontWeight:'bold', fontSize:'13px', wordBreak:'break-word'}}>{idea.text}</div>
+                   
+                   {/* DELETE BUTTON */}
                    {canDelete && (
                       <div onClick={() => handleDeleteClick(idea.id)} style={{color:'#ff4444', fontSize:'10px', marginTop:'5px', cursor:'pointer', textDecoration:'underline', fontWeight:'bold'}}>
-                          Delete {isAdmin && !isMine ? "(Admin)" : ""}
+                          Delete {isAdmin && !isMine ? "(Admin Force)" : ""}
                       </div>
                    )}
                 </div>
