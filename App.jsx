@@ -48,16 +48,16 @@ function App() {
       border: '3px solid #ff0000',
       objectFit: 'cover',
       marginBottom: '20px',
-      boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' // Cahaya lebih kuat
+      boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' 
     },
     title: {
-      fontSize: '28px', // Besar sikit
+      fontSize: '28px', 
       fontWeight: '900',
       textTransform: 'uppercase',
       color: '#ff0000',
-      letterSpacing: '4px', // Jarak huruf jauh sikit (style filem)
+      letterSpacing: '4px', 
       margin: '0',
-      textShadow: '0 0 10px #ff0000' // Efek neon
+      textShadow: '0 0 10px #ff0000' 
     },
     subTitle: {
       color: '#888', 
@@ -66,7 +66,6 @@ function App() {
       textTransform: 'uppercase', 
       letterSpacing: '2px'
     },
-    // Kotak Misteri Baru
     mysteryBox: {
         border: '1px solid #333', 
         borderRadius: '16px', 
@@ -160,9 +159,16 @@ function App() {
 
     // SKRIN DALAM
     switch (activeTab) {
-      case 'home': return <div style={styles.pageContent}><LinksPage /></div>;
-      case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
-      case 'soon': return (
+      case 'home': 
+        // Ini paparkan Home + Undian Idea (Fail KodUtility)
+        return <div style={styles.pageContent}><LinksPage /></div>;
+      
+      case 'ideas': 
+        // Ini paparkan Jualan NFT (Fail Governance)
+        return <div style={styles.pageContent}><IdeasPage /></div>;
+      
+      case 'soon': 
+        return (
           <div style={{...styles.pageContent, textAlign:'center', paddingTop:'100px'}}>
              <h1 style={{fontSize:'40px', margin:0}}>🚧</h1>
              <h2 style={{color:'white', marginTop:'10px'}}>COMING SOON</h2>
@@ -180,12 +186,17 @@ function App() {
       {/* MENU BAWAH */}
       {isVerified && (
         <div style={styles.bottomNav}>
+          {/* TAB 1: HOME */}
           <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}>
              <span style={{fontSize:'20px', marginBottom:'3px'}}>🏠</span> HOME
           </div>
+          
+          {/* TAB 2: NFTs (Dulu Ideas) */}
           <div style={activeTab === 'ideas' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('ideas')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>💡</span> IDEAS
+             <span style={{fontSize:'20px', marginBottom:'3px'}}>🖼️</span> NFTs
           </div>
+
+          {/* TAB 3: SOON */}
           <div style={activeTab === 'soon' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('soon')}>
              <span style={{fontSize:'20px', marginBottom:'3px'}}>🚀</span> SOON
           </div>
