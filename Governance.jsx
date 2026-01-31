@@ -1,86 +1,103 @@
-import React, { useState } from "react";
+import React from "react";
+import tokenImage from './alduin.jpg'; // Guna gambar kucing tuan
 
 function Governance() {
-  // Data simulasi (dummy data) untuk demo
-  // Nanti bila pandai database, kita boleh simpan betul-betul
-  const [ideas, setIdeas] = useState([
-    { id: 1, text: "Launch NFT Collection", likes: 15, liked: false },
-    { id: 2, text: "Create 1414 Merchandise", likes: 8, liked: false },
-    { id: 3, text: "Weekly Lucky Draw", likes: 42, liked: false },
-    { id: 4, text: "Collaborate with PUF", likes: 25, liked: false },
-  ]);
+  // Simulasi Progress Jualan
+  const total = 1414;
+  const sold = 890; // Contoh dah terjual sikit
+  const percentage = (sold / total) * 100;
 
-  // Fungsi untuk Like / Unlike
-  const toggleLike = (id) => {
-    const updatedIdeas = ideas.map((idea) => {
-      if (idea.id === id) {
-        return {
-          ...idea,
-          likes: idea.liked ? idea.likes - 1 : idea.likes + 1, // Tambah atau tolak
-          liked: !idea.liked
-        };
-      }
-      return idea;
-    });
-    setIdeas(updatedIdeas);
+  const cardStyle = {
+    background: 'linear-gradient(145deg, #111, #0a0a0a)',
+    border: '1px solid #333',
+    borderRadius: '20px',
+    padding: '20px',
+    textAlign: 'center',
+    marginBottom: '20px'
   };
 
-  // Susun idea: Paling banyak like duduk atas
-  const sortedIdeas = [...ideas].sort((a, b) => b.likes - a.likes);
+  const phaseStyle = (active) => ({
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '15px', borderRadius: '12px', marginBottom: '10px',
+    border: active ? '1px solid #ff0000' : '1px solid #222',
+    background: active ? '#1a0000' : '#111',
+    opacity: active ? 1 : 0.5
+  });
 
   return (
-    <div style={{paddingBottom:'50px'}}>
-      <h2 style={{color: '#ff0000', marginBottom: '10px', textTransform: 'uppercase'}}>Community Ideas</h2>
-      <p style={{color:'#888', fontSize:'12px', marginBottom:'20px'}}>
-        Top voted ideas will be prioritized.
-      </p>
-
-      <div style={{display:'flex', flexDirection:'column', gap:'15px'}}>
-        {sortedIdeas.map((idea, index) => (
-          <div key={idea.id} style={{
-            backgroundColor: '#111',
-            border: idea.liked ? '1px solid #ff0000' : '1px solid #333',
-            borderRadius: '12px',
-            padding: '15px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            transition: 'all 0.3s'
-          }}>
-            <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
-              {/* Nombor Ranking */}
-              <div style={{fontSize:'24px', fontWeight:'900', color:'#333'}}>#{index + 1}</div>
-              <div style={{textAlign:'left'}}>
-                <div style={{color:'white', fontWeight:'bold', fontSize:'14px'}}>{idea.text}</div>
-              </div>
-            </div>
-
-            {/* Butang Like */}
-            <button 
-              onClick={() => toggleLike(idea.id)}
-              style={{
-                background: idea.liked ? '#ff0000' : '#222',
-                color: 'white',
-                border: 'none',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display:'flex', 
-                flexDirection:'column',
-                alignItems:'center',
-                minWidth:'50px'
-              }}
-            >
-              <span style={{fontSize:'16px'}}>🔥</span>
-              <span style={{fontSize:'12px', fontWeight:'bold'}}>{idea.likes}</span>
-            </button>
-          </div>
-        ))}
+    <div style={{paddingBottom:'80px'}}>
+      
+      {/* HEADER GAMBAR NFT */}
+      <div style={{textAlign:'center', marginBottom:'30px'}}>
+         <img src={tokenImage} style={{
+             width: '180px', height: '180px', borderRadius: '20px', 
+             border: '4px solid #ff0000', objectFit: 'cover',
+             boxShadow: '0 0 30px rgba(255,0,0,0.3)'
+         }} />
+         <h1 style={{fontSize:'24px', color:'white', margin:'15px 0 5px 0', textTransform:'uppercase'}}>1414 Agent Card</h1>
+         <p style={{color:'#ff0000', fontSize:'12px', letterSpacing:'2px'}}>GENESIS COLLECTION</p>
       </div>
 
-      <div style={{marginTop:'30px', padding:'20px', border:'1px dashed #333', borderRadius:'10px', color:'#555'}}>
-        Submit new idea (Coming Soon)
+      {/* STATISTIK SUPPLY */}
+      <div style={cardStyle}>
+         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', fontSize:'12px', color:'#ccc'}}>
+            <span>Minted</span>
+            <span>{sold} / {total}</span>
+         </div>
+         {/* Progress Bar */}
+         <div style={{height:'10px', width:'100%', background:'#333', borderRadius:'5px', overflow:'hidden'}}>
+            <div style={{height:'100%', width: `${percentage}%`, background:'#ff0000'}}></div>
+         </div>
       </div>
+
+      {/* FASA JUALAN */}
+      <h3 style={{color:'white', fontSize:'16px', marginBottom:'15px'}}>MINT PHASES</h3>
+      
+      {/* Fasa 1 (Aktif) */}
+      <div style={phaseStyle(true)}>
+         <div style={{textAlign:'left'}}>
+            <div style={{color:'#ff0000', fontWeight:'bold', fontSize:'12px'}}>PHASE 1 (LIVE)</div>
+            <div style={{color:'white', fontWeight:'bold'}}>Early Bird</div>
+         </div>
+         <div style={{textAlign:'right'}}>
+            <div style={{color:'white', fontWeight:'bold'}}>1 USDC</div>
+            <div style={{color:'#00ff00', fontSize:'10px'}}>Active</div>
+         </div>
+      </div>
+
+      {/* Fasa 2 */}
+      <div style={phaseStyle(false)}>
+         <div style={{textAlign:'left'}}>
+            <div style={{color:'#666', fontWeight:'bold', fontSize:'12px'}}>PHASE 2</div>
+            <div style={{color:'#aaa', fontWeight:'bold'}}>Public</div>
+         </div>
+         <div style={{textAlign:'right'}}>
+            <div style={{color:'#aaa', fontWeight:'bold'}}>2 USDC</div>
+            <div style={{color:'#666', fontSize:'10px'}}>Locked</div>
+         </div>
+      </div>
+
+      {/* Fasa 3 */}
+      <div style={phaseStyle(false)}>
+         <div style={{textAlign:'left'}}>
+            <div style={{color:'#666', fontWeight:'bold', fontSize:'12px'}}>PHASE 3</div>
+            <div style={{color:'#aaa', fontWeight:'bold'}}>Final Call</div>
+         </div>
+         <div style={{textAlign:'right'}}>
+            <div style={{color:'#aaa', fontWeight:'bold'}}>3 USDC</div>
+            <div style={{color:'#666', fontSize:'10px'}}>Locked</div>
+         </div>
+      </div>
+
+      {/* BUTANG MINT */}
+      <button style={{
+          background: '#ff0000', color: 'white', border: 'none', padding: '18px 0',
+          borderRadius: '50px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer',
+          width: '100%', marginTop: '20px', boxShadow: '0 0 20px rgba(255,0,0,0.5)'
+      }} onClick={()=> alert("Minting Function coming soon!")}>
+         MINT NOW (1 USDC)
+      </button>
+
     </div>
   );
 }
