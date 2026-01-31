@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ethers } from "ethers"; // Kita perlu ini untuk baca wallet
 import LinksPage from "./KodUtility"; 
 import IdeasPage from "./Governance";
 import tokenImage from './alduin.jpg'; 
@@ -6,173 +7,103 @@ import tokenImage from './alduin.jpg';
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
-  
-  // Setup Skrin Hitam Penuh
+  const [userWallet, setUserWallet] = useState(null); // Simpan alamat wallet pengguna
+
+  // Setup Skrin Hitam
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
     document.body.style.margin = "0";
     document.body.style.height = "100%";
     document.getElementById('root').style.height = "100%";
+    
+    // Cuba check wallet senyap-senyap (kalau user dah pernah connect)
+    checkWalletConnection();
   }, []);
+
+  const checkWalletConnection = async () => {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length > 0) {
+          setUserWallet(accounts[0]); // Ambil alamat wallet pertama
+        }
+      } catch (err) {
+        console.log("Wallet not connected yet");
+      }
+    }
+  };
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setUserWallet(address);
+      } catch (err) {
+        alert("Connection failed");
+      }
+    } else {
+      alert("Please install Metamask or use World App");
+    }
+  };
 
   const handleEnterPortal = () => {
     setIsVerified(true);
     setActiveTab('home'); 
   };
 
+  // Styles (Sama macam dulu)
   const styles = {
-    mainContainer: {
-      backgroundColor: '#000000',
-      minHeight: '100vh', 
-      width: '100%',
-      color: '#ffffff',
-      fontFamily: "'Inter', sans-serif",
-      paddingBottom: '80px', 
-      userSelect: 'none',
-      WebkitUserSelect: 'none',
-    },
-    loginWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '90vh',
-      padding: '20px',
-      textAlign: 'center',
-    },
-    catImage: {
-      width: '130px',
-      height: '130px',
-      borderRadius: '50%',
-      border: '3px solid #ff0000',
-      objectFit: 'cover',
-      marginBottom: '20px',
-      boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' 
-    },
-    title: {
-      fontSize: '28px', 
-      fontWeight: '900',
-      textTransform: 'uppercase',
-      color: '#ff0000',
-      letterSpacing: '4px', 
-      margin: '0',
-      textShadow: '0 0 10px #ff0000' 
-    },
-    subTitle: {
-      color: '#888', 
-      fontSize: '12px', 
-      marginTop: '10px', 
-      textTransform: 'uppercase', 
-      letterSpacing: '2px'
-    },
-    mysteryBox: {
-        border: '1px solid #333', 
-        borderRadius: '16px', 
-        padding: '30px 20px', 
-        width: '100%', 
-        maxWidth: '280px', 
-        margin: '40px 0',
-        background: 'linear-gradient(180deg, #111 0%, #000 100%)',
-        boxShadow: 'inset 0 0 20px rgba(255,0,0,0.1)'
-    },
-    mysteryText: {
-        color: '#ff0000',
-        fontSize: '20px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        letterSpacing: '2px',
-        margin: 0,
-        textShadow: '0 0 5px rgba(255, 0, 0, 0.8)'
-    },
-    enterBtn: {
-        background: '#ff0000', 
-        color: 'white', 
-        border: 'none', 
-        padding: '15px 40px', 
-        borderRadius: '50px', 
-        fontSize: '16px', 
-        fontWeight: 'bold', 
-        cursor: 'pointer', 
-        boxShadow: '0 0 20px rgba(255, 0, 0, 0.6)',
-        letterSpacing: '2px',
-        marginTop: '10px',
-        textTransform: 'uppercase'
-    },
-    bottomNav: {
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      width: '100%',
-      backgroundColor: '#0a0a0a',
-      borderTop: '1px solid #333',
-      display: 'flex',
-      justifyContent: 'space-around',
-      padding: '12px 0',
-      zIndex: 1000,
-      paddingBottom: '20px' 
-    },
-    navItem: {
-      color: '#555',
-      fontSize: '10px', 
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      cursor: 'pointer',
-      width: '60px'
-    },
-    activeNav: {
-      color: '#ff0000',
-      fontWeight: 'bold',
-    },
-    pageContent: {
-      padding: '20px',
-      paddingTop: '40px',
-      maxWidth: '600px',
-      margin: '0 auto' 
-    }
+    mainContainer: { backgroundColor: '#000000', minHeight: '100vh', width: '100%', color: '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: '80px', userSelect: 'none', WebkitUserSelect: 'none' },
+    loginWrapper: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90vh', padding: '20px', textAlign: 'center' },
+    catImage: { width: '130px', height: '130px', borderRadius: '50%', border: '3px solid #ff0000', objectFit: 'cover', marginBottom: '20px', boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' },
+    title: { fontSize: '28px', fontWeight: '900', textTransform: 'uppercase', color: '#ff0000', letterSpacing: '4px', margin: '0', textShadow: '0 0 10px #ff0000' },
+    subTitle: { color: '#888', fontSize: '12px', marginTop: '10px', textTransform: 'uppercase', letterSpacing: '2px' },
+    mysteryBox: { border: '1px solid #333', borderRadius: '16px', padding: '30px 20px', width: '100%', maxWidth: '280px', margin: '40px 0', background: 'linear-gradient(180deg, #111 0%, #000 100%)', boxShadow: 'inset 0 0 20px rgba(255,0,0,0.1)' },
+    mysteryText: { color: '#ff0000', fontSize: '20px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', margin: 0, textShadow: '0 0 5px rgba(255, 0, 0, 0.8)' },
+    enterBtn: { background: '#ff0000', color: 'white', border: 'none', padding: '15px 40px', borderRadius: '50px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 20px rgba(255, 0, 0, 0.6)', letterSpacing: '2px', marginTop: '10px', textTransform: 'uppercase' },
+    walletBtn: { background: 'transparent', color: '#555', border: '1px solid #333', padding: '10px 20px', borderRadius: '50px', fontSize: '12px', cursor: 'pointer', marginTop: '20px', textTransform: 'uppercase' },
+    bottomNav: { position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: '#0a0a0a', borderTop: '1px solid #333', display: 'flex', justifyContent: 'space-around', padding: '12px 0', zIndex: 1000, paddingBottom: '20px' },
+    navItem: { color: '#555', fontSize: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', width: '60px' },
+    activeNav: { color: '#ff0000', fontWeight: 'bold' },
+    pageContent: { padding: '20px', paddingTop: '40px', maxWidth: '600px', margin: '0 auto' }
   };
 
   const renderContent = () => {
-    // SKRIN DEPAN (MISTERI)
     if (!isVerified) {
       return (
         <div style={styles.loginWrapper}>
           <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
-          
           <h1 style={styles.title}>PORTAL 1414</h1>
           <p style={styles.subTitle}>The Gate Opens</p>
 
           <div style={styles.mysteryBox}>
              <p style={{color:'#555', fontSize:'10px', marginBottom:'5px', textTransform:'uppercase'}}>Status</p>
-             <div style={styles.mysteryText}>
-                POWER UNLOCKS
-             </div>
+             <div style={styles.mysteryText}>POWER UNLOCKS</div>
           </div>
 
-          <button onClick={handleEnterPortal} style={styles.enterBtn}>
-            ENTER PORTAL
+          <button onClick={handleEnterPortal} style={styles.enterBtn}>ENTER PORTAL</button>
+          
+          {/* Butang Connect Wallet (Pilihan untuk Identity) */}
+          <button onClick={connectWallet} style={styles.walletBtn}>
+            {userWallet ? `ID: ${userWallet.slice(0,6)}...${userWallet.slice(-4)}` : "🔌 Connect ID (Optional)"}
           </button>
         </div>
       );
     }
 
-    // SKRIN DALAM
     switch (activeTab) {
-      case 'home': 
-        // Ini paparkan Home + Undian Idea (Fail KodUtility)
-        return <div style={styles.pageContent}><LinksPage /></div>;
-      
-      case 'ideas': 
-        // Ini paparkan Jualan NFT (Fail Governance)
-        return <div style={styles.pageContent}><IdeasPage /></div>;
-      
-      case 'soon': 
-        return (
+      // 🔥 KITA HANTAR ID USER KE KODUTILITY 🔥
+      case 'home': return <div style={styles.pageContent}><LinksPage currentUser={userWallet} /></div>;
+      case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
+      case 'soon': return (
           <div style={{...styles.pageContent, textAlign:'center', paddingTop:'100px'}}>
              <h1 style={{fontSize:'40px', margin:0}}>🚧</h1>
              <h2 style={{color:'white', marginTop:'10px'}}>COMING SOON</h2>
-             <p style={{color:'#666', fontSize:'13px'}}>More features underway.</p>
           </div>
         );
       default: return null;
@@ -182,24 +113,11 @@ function App() {
   return (
     <div style={styles.mainContainer}>
       {renderContent()}
-
-      {/* MENU BAWAH */}
       {isVerified && (
         <div style={styles.bottomNav}>
-          {/* TAB 1: HOME */}
-          <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>🏠</span> HOME
-          </div>
-          
-          {/* TAB 2: NFTs (Dulu Ideas) */}
-          <div style={activeTab === 'ideas' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('ideas')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>🖼️</span> NFTs
-          </div>
-
-          {/* TAB 3: SOON */}
-          <div style={activeTab === 'soon' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('soon')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>🚀</span> SOON
-          </div>
+          <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}><span style={{fontSize:'20px', marginBottom:'3px'}}>🏠</span> HOME</div>
+          <div style={activeTab === 'ideas' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('ideas')}><span style={{fontSize:'20px', marginBottom:'3px'}}>🖼️</span> NFTs</div>
+          <div style={activeTab === 'soon' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('soon')}><span style={{fontSize:'20px', marginBottom:'3px'}}>🚀</span> SOON</div>
         </div>
       )}
     </div>
