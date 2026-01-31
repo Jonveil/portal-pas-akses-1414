@@ -1,30 +1,51 @@
 import React, { useState } from "react";
 
 function Utility() {
-  // --- LOGIK UNDIAN (DUMMY) ---
+  // Data Asal (Dummy) - Boleh buang atau tambah
   const [ideas, setIdeas] = useState([
-    { id: 1, text: "Buat Baju Hoodie 1414", likes: 42, liked: false },
-    { id: 2, text: "Collab dengan Worldcoin", likes: 25, liked: false },
-    { id: 3, text: "Party Makan-makan KL", likes: 15, liked: false },
+    { id: 1, text: "Launch 1414 Hoodie", likes: 42, liked: false },
+    { id: 2, text: "Collab with Worldcoin", likes: 25, liked: false },
+    { id: 3, text: "Kuala Lumpur Meetup", likes: 15, liked: false },
   ]);
 
   const [newIdea, setNewIdea] = useState("");
 
+  // Fungsi: Bila tekan api, nombor naik & auto susun
   const toggleLike = (id) => {
     const updatedIdeas = ideas.map((idea) => {
       if (idea.id === id) {
-        return { ...idea, likes: idea.liked ? idea.likes - 1 : idea.likes + 1, liked: !idea.liked };
+        // Kalau dah like, dia unlike. Kalau belum, dia like.
+        return { 
+          ...idea, 
+          likes: idea.liked ? idea.likes - 1 : idea.likes + 1, 
+          liked: !idea.liked 
+        };
       }
       return idea;
     });
-    setIdeas(updatedIdeas.sort((a, b) => b.likes - a.likes)); // Auto susun
+    
+    // 🔥 AUTO SORT: Yang paling tinggi like terus naik atas
+    setIdeas(updatedIdeas.sort((a, b) => b.likes - a.likes)); 
   };
 
+  // Fungsi: Tambah idea baru TANPA POPUP
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newIdea) return;
-    alert("✅ Idea submitted! Waiting for approval.");
-    setNewIdea("");
+    if (!newIdea) return; // Kalau kosong tak jadi apa
+
+    // Cipta idea baru
+    const newItem = { 
+      id: Date.now(), // Guna masa sebagai ID unik
+      text: newIdea, 
+      likes: 0, 
+      liked: false 
+    };
+
+    // Masukkan idea baru ke dalam senarai sedia ada
+    setIdeas([newItem, ...ideas]); 
+    
+    // Kosongkan kotak tulis
+    setNewIdea(""); 
   };
 
   // --- STYLE ---
@@ -67,10 +88,10 @@ function Utility() {
         
         <div style={{marginBottom:'15px'}}>
           <div style={{fontWeight:'bold', fontSize:'14px'}}>Luno (Free BTC)</div>
-          <p style={{fontSize:'11px', color:'#888', margin:'5px 0'}}>Deposit & buy RM250 crypto, get RM25 free.</p>
+          <p style={{fontSize:'11px', color:'#888', margin:'5px 0'}}>Deposit & buy crypto, get rewards.</p>
           <div style={{background:'#222', padding:'8px', borderRadius:'8px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
              <code style={{color:'#ff0000'}}>4A2THW</code>
-             <button onClick={() => {navigator.clipboard.writeText("4A2THW"); alert("Copied!")}} style={{fontSize:'10px', padding:'5px 10px', background:'#444', border:'none', color:'white', borderRadius:'4px'}}>COPY</button>
+             <button onClick={() => {navigator.clipboard.writeText("4A2THW")}} style={{fontSize:'10px', padding:'5px 10px', background:'#444', border:'none', color:'white', borderRadius:'4px', cursor:'pointer'}}>COPY</button>
           </div>
           <a href="https://www.luno.com/invite/4A2THW" target="_blank" style={{fontSize:'12px', color:'#3498db', display:'block', marginTop:'5px'}}>Open Luno ➜</a>
         </div>
@@ -83,42 +104,79 @@ function Utility() {
         </div>
       </div>
 
-      {/* 3. COMMUNITY IDEAS (DIPINDAHKAN KE SINI) */}
+      {/* 3. COMMUNITY VOICE (INTERAKTIF) */}
       <h2 style={{color: '#ff0000', margin: '30px 0 10px 0', textTransform: 'uppercase', fontSize:'18px'}}>💡 Community Voice</h2>
       <p style={{color:'#666', fontSize:'12px', marginBottom:'20px'}}>Top voted ideas will be prioritized.</p>
 
-      {/* List Idea */}
-      <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-        {ideas.map((idea, index) => (
-          <div key={idea.id} style={{
-            backgroundColor: '#111', border: idea.liked ? '1px solid #ff0000' : '1px solid #333',
-            borderRadius: '12px', padding: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-          }}>
-            <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
-              <div style={{fontSize:'18px', fontWeight:'900', color:'#444'}}>#{index + 1}</div>
-              <div style={{color:'white', fontWeight:'bold', fontSize:'13px'}}>{idea.text}</div>
-            </div>
-            <button onClick={() => toggleLike(idea.id)} style={{
-                background: idea.liked ? '#ff0000' : '#222', color: 'white', border: 'none',
-                padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', minWidth:'40px'
-              }}>
-              🔥 <span style={{fontSize:'12px', fontWeight:'bold'}}>{idea.likes}</span>
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Submit Form */}
-      <form onSubmit={handleSubmit} style={{marginTop:'20px', display:'flex', gap:'10px'}}>
+      {/* Submit Form (ATAS) */}
+      <form onSubmit={handleSubmit} style={{marginBottom:'20px', display:'flex', gap:'10px'}}>
          <input 
            type="text" 
            placeholder="Write your idea here..." 
            value={newIdea}
            onChange={(e)=>setNewIdea(e.target.value)}
-           style={{flex:1, padding:'12px', borderRadius:'10px', border:'1px solid #333', background:'#000', color:'white'}}
+           style={{
+             flex:1, 
+             padding:'12px', 
+             borderRadius:'10px', 
+             border:'1px solid #333', 
+             background:'#111', 
+             color:'white',
+             outline: 'none'
+           }}
          />
-         <button type="submit" style={{padding:'0 15px', borderRadius:'10px', background:'#333', color:'white', border:'none', fontWeight:'bold'}}>+</button>
+         <button type="submit" style={{
+           padding:'0 20px', 
+           borderRadius:'10px', 
+           background:'#ff0000', 
+           color:'white', 
+           border:'none', 
+           fontWeight:'bold',
+           fontSize:'20px',
+           cursor:'pointer'
+         }}>+</button>
       </form>
+
+      {/* List Idea (LIVE UPDATE) */}
+      <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+        {ideas.map((idea, index) => (
+          <div key={idea.id} style={{
+            backgroundColor: '#111', 
+            border: idea.liked ? '1px solid #ff0000' : '1px solid #333', // Merah kalau dah like
+            borderRadius: '12px', 
+            padding: '15px', 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            transition: 'all 0.3s ease' // Animasi lembut
+          }}>
+            <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
+              <div style={{fontSize:'18px', fontWeight:'900', color: index === 0 ? '#ff0000' : '#444'}}>
+                #{index + 1}
+              </div>
+              <div style={{color:'white', fontWeight:'bold', fontSize:'13px', maxWidth:'200px'}}>
+                {idea.text}
+              </div>
+            </div>
+            
+            <button onClick={() => toggleLike(idea.id)} style={{
+                background: idea.liked ? '#ff0000' : '#222', 
+                color: 'white', 
+                border: 'none',
+                padding: '8px 12px', 
+                borderRadius: '8px', 
+                cursor: 'pointer', 
+                minWidth:'50px',
+                display:'flex',
+                alignItems:'center',
+                gap:'5px'
+              }}>
+              <span>🔥</span> 
+              <span style={{fontSize:'12px', fontWeight:'bold'}}>{idea.likes}</span>
+            </button>
+          </div>
+        ))}
+      </div>
 
     </div>
   );
