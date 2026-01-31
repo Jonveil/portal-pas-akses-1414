@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+// Kita guna semula fail lama tapi isi dalam dah baru
 import LinksPage from "./KodUtility"; 
 import IdeasPage from "./Governance";
 import tokenImage from './alduin.jpg'; 
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home'); 
+  const [activeTab, setActiveTab] = useState('home'); // 'home' (kiri), 'ideas' (tengah), 'soon' (kanan)
   const [isVerified, setIsVerified] = useState(false);
   
-  // --- SIMULASI VIP (Auto Kaya) ---
   const userTokenBalance = 10.0; 
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
@@ -21,9 +21,13 @@ function App() {
   }, []);
 
   const handleEnterPortal = () => {
-    // Terus masuk tanpa banyak soal
-    setIsVerified(true);
-    setActiveTab('home'); 
+    if (hasEnoughTokens) {
+      setIsVerified(true);
+      // Bila masuk, terus pergi ke tab 'home' (Links)
+      setActiveTab('home'); 
+    } else {
+       alert("Insufficient Balance.");
+    }
   };
 
   const styles = {
@@ -37,6 +41,7 @@ function App() {
       userSelect: 'none',
       WebkitUserSelect: 'none',
     },
+    // Login Screen Style
     loginWrapper: {
       display: 'flex',
       flexDirection: 'column',
@@ -47,45 +52,23 @@ function App() {
       textAlign: 'center',
     },
     catImage: {
-      width: '130px',
-      height: '130px',
+      width: '140px',
+      height: '140px',
       borderRadius: '50%',
-      border: '3px solid #ff0000',
+      border: '4px solid #ff0000',
       objectFit: 'cover',
       marginBottom: '20px',
-      boxShadow: '0 0 35px rgba(255, 0, 0, 0.5)'
+      boxShadow: '0 0 40px rgba(255, 0, 0, 0.6)'
     },
     title: {
-      fontSize: '26px',
+      fontSize: '28px',
       fontWeight: '900',
       textTransform: 'uppercase',
       color: '#ff0000',
       letterSpacing: '2px',
       margin: '0',
     },
-    statusBox: {
-        background: '#111', 
-        border: '1px solid #333', 
-        borderRadius: '16px', 
-        padding: '20px', 
-        width: '100%', 
-        maxWidth: '280px', // Kotak lebih ramping
-        margin: '30px 0'
-    },
-    // 🔥 BUTANG LEBIH KECIL & KEMAS 🔥
-    enterBtn: {
-        background: 'linear-gradient(90deg, #ff0000, #b30000)', 
-        color: 'white', 
-        border: 'none', 
-        padding: '12px 35px', 
-        borderRadius: '50px', 
-        fontSize: '15px', 
-        fontWeight: 'bold', 
-        cursor: 'pointer', 
-        boxShadow: '0 0 15px rgba(255, 0, 0, 0.4)',
-        letterSpacing: '1px',
-        marginTop: '10px'
-    },
+    // Bottom Nav Style
     bottomNav: {
       position: 'fixed',
       bottom: 0,
@@ -95,13 +78,13 @@ function App() {
       borderTop: '1px solid #333',
       display: 'flex',
       justifyContent: 'space-around',
-      padding: '12px 0', // Nipis sikit
+      padding: '15px 0',
       zIndex: 1000,
-      paddingBottom: '20px' 
+      paddingBottom: '20px' // Jarak sikit untuk iPhone baru
     },
     navItem: {
       color: '#555',
-      fontSize: '10px', 
+      fontSize: '10px', // Tulisan kecil sikit
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -116,52 +99,60 @@ function App() {
       padding: '20px',
       paddingTop: '40px',
       maxWidth: '600px',
-      margin: '0 auto' 
+      margin: '0 auto' // Centerkan kalau skrin besar
     }
   };
 
+  // --- LOGIC TUKAR HALAMAN ---
   const renderContent = () => {
-    // SKRIN DEPAN (LOGIN)
+    // Kalau belum login, tunjuk pintu pagar (Login Screen)
     if (!isVerified) {
       return (
         <div style={styles.loginWrapper}>
           <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
           <h1 style={styles.title}>Portal 1414</h1>
-          <p style={{color:'#888', fontSize:'12px', marginTop:'5px'}}>Exclusive Token Gated Entry</p>
+          <p style={{color:'#888', fontSize:'13px'}}>Exclusive Token Gated Access</p>
 
-          <div style={styles.statusBox}>
-            <div style={{color: '#666', fontSize: '10px', textTransform: 'uppercase', letterSpacing:'1px'}}>YOUR HOLDINGS</div>
-            <div style={{fontSize: '32px', fontWeight: '800', margin: '5px 0', color: 'white'}}>
-               {userTokenBalance.toFixed(1)}
-            </div>
-            <div style={{color: '#ff0000', fontSize: '12px', fontWeight: 'bold'}}>1414 TOKEN</div>
+          <div style={{background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '25px', width: '100%', maxWidth: '320px', margin: '30px 0'}}>
+            <div style={{color: '#666', fontSize: '11px', textTransform: 'uppercase'}}>HOLDINGS</div>
+            <div style={{fontSize: '42px', fontWeight: '800', margin: '5px 0', color: 'white'}}>{userTokenBalance.toFixed(1)}</div>
+            <div style={{color: '#ff0000', fontSize: '14px', fontWeight: 'bold'}}>1414 TOKEN</div>
             
-            <div style={{marginTop: '15px', paddingTop: '10px', borderTop: '1px solid #222'}}>
-               <span style={{color: '#00ff00', fontSize:'11px', fontWeight:'bold'}}>
-                 ✅ ELIGIBLE FOR ENTRY
-               </span>
+            <div style={{marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #222'}}>
+               {hasEnoughTokens ? 
+                 <span style={{color: '#00ff00', fontSize:'12px', fontWeight:'bold'}}>✅ ELIGIBLE (≥{minRequired})</span> : 
+                 <span style={{color: 'red'}}>❌ INELIGIBLE</span>
+               }
             </div>
           </div>
 
-          <button onClick={handleEnterPortal} style={styles.enterBtn}>
-            ENTER PORTAL
-          </button>
+          {hasEnoughTokens ? (
+            <button onClick={handleEnterPortal} style={{background: '#ff0000', color: 'white', border: 'none', padding: '18px 0', borderRadius: '50px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer', width: '100%', maxWidth: '300px', boxShadow: '0 0 25px rgba(255, 0, 0, 0.4)'}}>
+              ENTER PORTAL
+            </button>
+          ) : (
+            <div style={{color:'#555'}}>Purchase tokens to enter.</div>
+          )}
         </div>
       );
     }
 
-    // SKRIN DALAM (LEPAS LOGIN)
+    // Kalau DAH login, tunjuk content berdasarkan Tab
     switch (activeTab) {
-      case 'home': return <div style={styles.pageContent}><LinksPage /></div>;
-      case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
-      case 'soon': return (
+      case 'home':
+        return <div style={styles.pageContent}><LinksPage /></div>; // Ini KodUtility
+      case 'ideas':
+        return <div style={styles.pageContent}><IdeasPage /></div>; // Ini Governance
+      case 'soon':
+        return (
           <div style={{...styles.pageContent, textAlign:'center', paddingTop:'100px'}}>
-             <h1 style={{fontSize:'40px', margin:0}}>🚧</h1>
-             <h2 style={{color:'white', marginTop:'10px'}}>COMING SOON</h2>
-             <p style={{color:'#666', fontSize:'13px'}}>More features underway.</p>
+             <h1 style={{fontSize:'50px', margin:0}}>🚧</h1>
+             <h2 style={{color:'white'}}>COMING SOON</h2>
+             <p style={{color:'#666'}}>More features are being built.</p>
           </div>
         );
-      default: return null;
+      default:
+        return null;
     }
   };
 
@@ -169,17 +160,25 @@ function App() {
     <div style={styles.mainContainer}>
       {renderContent()}
 
-      {/* MENU BAWAH */}
+      {/* MENU BAWAH - Hanya muncul lepas login */}
       {isVerified && (
         <div style={styles.bottomNav}>
+          {/* TAB 1: HOME (Links) */}
           <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>🏠</span> HOME
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>🏠</span> 
+             HOME
           </div>
+          
+          {/* TAB 2: IDEAS (Tengah) */}
           <div style={activeTab === 'ideas' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('ideas')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>💡</span> IDEAS
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>💡</span> 
+             IDEAS
           </div>
+
+          {/* TAB 3: SOON (Kanan) */}
           <div style={activeTab === 'soon' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('soon')}>
-             <span style={{fontSize:'20px', marginBottom:'3px'}}>🚀</span> SOON
+             <span style={{fontSize:'22px', marginBottom:'5px'}}>🚀</span> 
+             SOON
           </div>
         </div>
       )}
