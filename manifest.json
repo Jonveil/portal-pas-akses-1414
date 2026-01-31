@@ -7,7 +7,7 @@
   "theme_color": "#ff0000",
   "icons": [
     {
-      "src": "/token.jpg",
+      "src": "/alduin.jpg",
       "sizes": "192x192",
       "type": "image/jpeg"
     }
