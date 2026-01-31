@@ -48,7 +48,7 @@ function Utility() {
       
       <p style={{color: "white", fontWeight: "bold"}}>🔗 Exclusive Links:</p>
       <ul style={{paddingLeft: "20px", color: "#ccc"}}>
-        <li style={{marginBottom: "5px"}}><a href="#" style={{color: "#ff0000"}}>Alpha Group Telegram</a></li>
+        <li style={{marginBottom: "5px"}}><a href="#" style={{color: "#ff0000"}}>Group Telegram</a></li>
         <li><a href="#" style={{color: "#ff0000"}}>Whitelist Form</a></li>
       </ul>
     </div>
