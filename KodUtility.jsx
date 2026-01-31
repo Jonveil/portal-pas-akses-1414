@@ -1,33 +1,36 @@
 import React, { useState, useEffect } from "react";
 
-// 🔥 MASUKKAN ALAMAT WALLET TUAN DI SINI UNTUK JADI ADMIN 🔥
-// Contoh: "0x5Af2204515d8A092Af4482607Cc0c6A17aafF4ba"
-const ADMIN_WALLET = "0xMASUKKAN_WALLET_TUAN_DISINI"; 
+// --- ADMIN CONFIGURATION ---
+// This wallet has full control to delete any post
+const ADMIN_WALLET = "0x47f77561f299bbb55aaca003f76c4b9519e16c02"; 
 
-function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
+function Utility({ currentUser }) { 
   const [ideas, setIdeas] = useState([]);
   const [newIdea, setNewIdea] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
-  // Semak adakah saya Admin? (Case insensitive)
+  // Check if current user is the Admin (Case insensitive check)
   const isAdmin = currentUser && ADMIN_WALLET && currentUser.toLowerCase() === ADMIN_WALLET.toLowerCase();
 
-  // Semak adakah saya sudah post idea? (1 Orang 1 Undi)
+  // Check if user has already posted (1 Person 1 Vote Rule)
+  // Exception: Admin can post multiple times
   const hasPosted = ideas.some(idea => idea.ownerId && currentUser && idea.ownerId.toLowerCase() === currentUser.toLowerCase());
 
-  // Load Data
+  // Load Data from Local Storage
   useEffect(() => {
     const savedIdeas = localStorage.getItem("my_ideas");
     if (savedIdeas) {
       setIdeas(JSON.parse(savedIdeas));
     } else {
+      // Default dummy data
       setIdeas([
         { id: 1, text: "Launch 1414 Hoodie", likes: 42, liked: false, ownerId: "system" },
+        { id: 2, text: "Collab with Worldcoin", likes: 25, liked: false, ownerId: "system" },
       ]);
     }
   }, []);
 
-  // Save Data
+  // Save Data to Local Storage on change
   useEffect(() => {
     localStorage.setItem("my_ideas", JSON.stringify(ideas));
   }, [ideas]);
@@ -39,16 +42,17 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
       }
       return idea;
     });
+    // Auto sort by highest likes
     setIdeas(updatedIdeas.sort((a, b) => b.likes - a.likes)); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // 1. Check Login
+    // Validation: Must be connected
     if (!currentUser) return alert("Please connect wallet to post!");
     
-    // 2. Check 1 Post Rule (Kecuali Admin boleh post banyak)
+    // Validation: 1 Post per user (Admin exempted)
     if (hasPosted && !isAdmin) return alert("You already have an active idea. Delete it to post a new one.");
     
     if (!newIdea) return;
@@ -58,20 +62,22 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
       text: newIdea, 
       likes: 0, 
       liked: false,
-      ownerId: currentUser // Cop ID owner pada idea
+      ownerId: currentUser // Stamp the idea with wallet address
     };
 
     setIdeas([newItem, ...ideas]); 
     setNewIdea(""); 
   };
 
-  // Logic Delete
+  // Delete Logic
   const handleDeleteClick = (id) => setShowDeleteConfirm(id);
+  
   const confirmDelete = () => {
     const filteredIdeas = ideas.filter((idea) => idea.id !== showDeleteConfirm);
     setIdeas(filteredIdeas);
     setShowDeleteConfirm(null);
   };
+
   const cancelDelete = () => setShowDeleteConfirm(null);
 
   // --- STYLES ---
@@ -81,7 +87,7 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
   return (
     <div style={{paddingBottom: '80px', position: 'relative'}}>
       
-      {/* MODAL DELETE */}
+      {/* CUSTOM DELETE MODAL */}
       {showDeleteConfirm && (
         <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           <div style={{background: '#111', border: '1px solid #ff0000', borderRadius: '15px', padding: '25px', width: '80%', maxWidth: '300px', textAlign: 'center', boxShadow: '0 0 40px rgba(255,0,0,0.6)'}}>
@@ -95,7 +101,7 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
         </div>
       )}
 
-      {/* 1. LINKS & CRYPTO (Sama macam biasa) */}
+      {/* 1. OFFICIAL LINKS */}
       <div style={boxStyle}>
         <h3 style={{margin:'0 0 15px 0', color:'#ff0000', fontSize:'14px', textTransform:'uppercase'}}>🚀 OFFICIAL LINKS</h3>
         <a href="https://x.com/TarikNescafe" target="_blank" style={linkStyle}>
@@ -106,6 +112,7 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
         </a>
       </div>
 
+      {/* 2. EARN CRYPTO */}
       <div style={boxStyle}>
         <h3 style={{margin:'0 0 15px 0', color:'#ff0000', fontSize:'14px', textTransform:'uppercase'}}>💰 EARN CRYPTO</h3>
         <div style={{marginBottom:'15px'}}>
@@ -116,37 +123,43 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
           </div>
           <a href="https://www.luno.com/invite/4A2THW" target="_blank" style={{fontSize:'12px', color:'#3498db', display:'block', marginTop:'5px'}}>Open Luno ➜</a>
         </div>
+        <div>
+          <div style={{fontWeight:'bold', fontSize:'14px'}}>Binance</div>
+          <a href="https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=id&ref=GRO_28502_GT4C5&utm_source=default" target="_blank" style={{fontSize:'12px', color:'#FCD535', textDecoration:'none', fontWeight:'bold'}}>
+            Join Binance & Earn ➜
+          </a>
+        </div>
       </div>
 
-      {/* 3. COMMUNITY VOICE (LOGIC BARU) */}
+      {/* 3. COMMUNITY VOICE SECTION */}
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'30px'}}>
          <h2 style={{color: '#ff0000', margin: 0, textTransform: 'uppercase', fontSize:'18px'}}>💡 Community Voice</h2>
-         {isAdmin && <span style={{fontSize:'10px', background:'red', padding:'2px 6px', borderRadius:'4px', color:'white'}}>ADMIN MODE</span>}
+         {isAdmin && <span style={{fontSize:'10px', background:'red', padding:'2px 6px', borderRadius:'4px', color:'white'}}>ADMIN</span>}
       </div>
       
       <p style={{color:'#666', fontSize:'12px', marginBottom:'20px'}}>
          {hasPosted && !isAdmin ? "✅ You have posted an idea." : "Submit your idea (Max 1 per person)"}
       </p>
       
-      {/* INPUT FORM (Disable kalau dah post) */}
+      {/* INPUT FORM */}
       <form onSubmit={handleSubmit} style={{marginBottom:'20px', display:'flex', gap:'10px', opacity: (hasPosted && !isAdmin) ? 0.5 : 1}}>
          <input 
            type="text" 
            placeholder={hasPosted && !isAdmin ? "Delete old idea to post new..." : "Suggest an idea..."} 
            value={newIdea}
-           disabled={hasPosted && !isAdmin} // Kunci kotak jika dah post
+           disabled={hasPosted && !isAdmin} 
            onChange={(e)=>setNewIdea(e.target.value)}
            style={{flex:1, padding:'12px', borderRadius:'10px', border:'1px solid #333', background:'#111', color:'white', outline: 'none'}}
          />
          <button type="submit" disabled={hasPosted && !isAdmin} style={{padding:'0 20px', borderRadius:'10px', background: (hasPosted && !isAdmin) ? '#333' : '#ff0000', color:'white', border:'none', fontWeight:'bold', fontSize:'20px'}}>+</button>
       </form>
 
-      {/* LIST IDEA */}
+      {/* IDEA LIST */}
       <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
         {ideas.map((idea, index) => {
-          // Check: Adakah ini idea saya?
+          // Check ownership
           const isMine = currentUser && idea.ownerId && idea.ownerId.toLowerCase() === currentUser.toLowerCase();
-          // Butang delete keluar jika: (Idea Saya) ATAU (Saya Admin)
+          // Permission check: Admin OR Owner can delete
           const canDelete = isMine || isAdmin;
 
           return (
@@ -156,7 +169,7 @@ function Utility({ currentUser }) { // Terima ID pengguna dari App.jsx
                 <div style={{textAlign:'left', width:'100%'}}>
                    <div style={{color:'white', fontWeight:'bold', fontSize:'13px', wordBreak:'break-word'}}>{idea.text}</div>
                    
-                   {/* 🔥 BUTANG DELETE MUNCUL JIKA LAYAK 🔥 */}
+                   {/* DELETE BUTTON: Only renders if allowed */}
                    {canDelete && (
                       <div onClick={() => handleDeleteClick(idea.id)} style={{color:'#ff4444', fontSize:'10px', marginTop:'5px', cursor:'pointer', textDecoration:'underline', fontWeight:'bold'}}>
                           Delete {isAdmin && !isMine ? "(Admin Force)" : ""}
