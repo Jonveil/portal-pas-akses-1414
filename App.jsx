@@ -7,11 +7,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
   
-  // --- SIMULASI VIP (Auto Kaya) ---
-  const userTokenBalance = 10.0; 
-  const minRequired = 1.0;
-  const hasEnoughTokens = userTokenBalance >= minRequired;
-
+  // Setup Skrin Hitam Penuh
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
@@ -21,7 +17,6 @@ function App() {
   }, []);
 
   const handleEnterPortal = () => {
-    // Terus masuk tanpa banyak soal
     setIsVerified(true);
     setActiveTab('home'); 
   };
@@ -53,38 +48,57 @@ function App() {
       border: '3px solid #ff0000',
       objectFit: 'cover',
       marginBottom: '20px',
-      boxShadow: '0 0 35px rgba(255, 0, 0, 0.5)'
+      boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' // Cahaya lebih kuat
     },
     title: {
-      fontSize: '26px',
+      fontSize: '28px', // Besar sikit
       fontWeight: '900',
       textTransform: 'uppercase',
       color: '#ff0000',
-      letterSpacing: '2px',
+      letterSpacing: '4px', // Jarak huruf jauh sikit (style filem)
       margin: '0',
+      textShadow: '0 0 10px #ff0000' // Efek neon
     },
-    statusBox: {
-        background: '#111', 
+    subTitle: {
+      color: '#888', 
+      fontSize: '12px', 
+      marginTop: '10px', 
+      textTransform: 'uppercase', 
+      letterSpacing: '2px'
+    },
+    // Kotak Misteri Baru
+    mysteryBox: {
         border: '1px solid #333', 
         borderRadius: '16px', 
-        padding: '20px', 
+        padding: '30px 20px', 
         width: '100%', 
-        maxWidth: '280px', // Kotak lebih ramping
-        margin: '30px 0'
+        maxWidth: '280px', 
+        margin: '40px 0',
+        background: 'linear-gradient(180deg, #111 0%, #000 100%)',
+        boxShadow: 'inset 0 0 20px rgba(255,0,0,0.1)'
     },
-    // 🔥 BUTANG LEBIH KECIL & KEMAS 🔥
+    mysteryText: {
+        color: '#ff0000',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        letterSpacing: '2px',
+        margin: 0,
+        textShadow: '0 0 5px rgba(255, 0, 0, 0.8)'
+    },
     enterBtn: {
-        background: 'linear-gradient(90deg, #ff0000, #b30000)', 
+        background: '#ff0000', 
         color: 'white', 
         border: 'none', 
-        padding: '12px 35px', 
+        padding: '15px 40px', 
         borderRadius: '50px', 
-        fontSize: '15px', 
+        fontSize: '16px', 
         fontWeight: 'bold', 
         cursor: 'pointer', 
-        boxShadow: '0 0 15px rgba(255, 0, 0, 0.4)',
-        letterSpacing: '1px',
-        marginTop: '10px'
+        boxShadow: '0 0 20px rgba(255, 0, 0, 0.6)',
+        letterSpacing: '2px',
+        marginTop: '10px',
+        textTransform: 'uppercase'
     },
     bottomNav: {
       position: 'fixed',
@@ -95,7 +109,7 @@ function App() {
       borderTop: '1px solid #333',
       display: 'flex',
       justifyContent: 'space-around',
-      padding: '12px 0', // Nipis sikit
+      padding: '12px 0',
       zIndex: 1000,
       paddingBottom: '20px' 
     },
@@ -121,26 +135,20 @@ function App() {
   };
 
   const renderContent = () => {
-    // SKRIN DEPAN (LOGIN)
+    // SKRIN DEPAN (MISTERI)
     if (!isVerified) {
       return (
         <div style={styles.loginWrapper}>
           <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
-          <h1 style={styles.title}>Portal 1414</h1>
-          <p style={{color:'#888', fontSize:'12px', marginTop:'5px'}}>Exclusive Token Gated Entry</p>
+          
+          <h1 style={styles.title}>PORTAL 1414</h1>
+          <p style={styles.subTitle}>The Gate Opens</p>
 
-          <div style={styles.statusBox}>
-            <div style={{color: '#666', fontSize: '10px', textTransform: 'uppercase', letterSpacing:'1px'}}>YOUR HOLDINGS</div>
-            <div style={{fontSize: '32px', fontWeight: '800', margin: '5px 0', color: 'white'}}>
-               {userTokenBalance.toFixed(1)}
-            </div>
-            <div style={{color: '#ff0000', fontSize: '12px', fontWeight: 'bold'}}>1414 TOKEN</div>
-            
-            <div style={{marginTop: '15px', paddingTop: '10px', borderTop: '1px solid #222'}}>
-               <span style={{color: '#00ff00', fontSize:'11px', fontWeight:'bold'}}>
-                 ✅ ELIGIBLE FOR ENTRY
-               </span>
-            </div>
+          <div style={styles.mysteryBox}>
+             <p style={{color:'#555', fontSize:'10px', marginBottom:'5px', textTransform:'uppercase'}}>Status</p>
+             <div style={styles.mysteryText}>
+                POWER UNLOCKS
+             </div>
           </div>
 
           <button onClick={handleEnterPortal} style={styles.enterBtn}>
@@ -150,7 +158,7 @@ function App() {
       );
     }
 
-    // SKRIN DALAM (LEPAS LOGIN)
+    // SKRIN DALAM
     switch (activeTab) {
       case 'home': return <div style={styles.pageContent}><LinksPage /></div>;
       case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
