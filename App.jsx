@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
 
-// KITA IMPORT GAMBAR YANG DAH DI-RENAME
-import tokenImage from './token.jpg'; 
+// 🔥 SAYA DAH TUKAR BARIS NI UNTUK IKUT NAMA FAIL PANJANG TUAN 🔥
+import tokenImage from './FB_IMG_1769066722728.jpg'; 
 
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
@@ -14,7 +14,7 @@ function App() {
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
 
-  // 🔥 KOD PAKSA SKRIN HITAM PENUH 🔥
+  // Kod Paksa Skrin Hitam Penuh
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
@@ -129,7 +129,9 @@ function App() {
       case 'home':
         return (
           <div style={styles.homeWrapper}>
-            <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
+            {/* Kod ini akan baca gambar panjang tuan tu */}
+            <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'; alert("Masalah gambar!")}} />
+            
             <h1 style={styles.title}>Portal 1414</h1>
             <p style={{color:'#888', fontSize:'13px'}}>Exclusive Token Gated Access</p>
 
