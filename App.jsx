@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
 
-// 🔥 PEMBETULAN PENTING: Guna nama fail sebenar yang ada dalam GitHub tuan
-import tokenImage from './FB_IMG_1769066722728.jpg'; 
+// KITA IMPORT GAMBAR YANG DAH DI-RENAME
+import tokenImage from './token.jpg'; 
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home'); // 'home', 'utility', 'vote'
+  const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
   
   // Logik Token (Simulasi)
@@ -14,40 +14,41 @@ function App() {
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
 
-  // Pastikan skrin sentiasa hitam penuh
+  // 🔥 KOD PAKSA SKRIN HITAM PENUH 🔥
   useEffect(() => {
+    document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
     document.body.style.margin = "0";
-    document.body.style.overflowX = "hidden"; // Elak scroll tepi
+    document.body.style.height = "100%";
+    document.getElementById('root').style.height = "100%";
   }, []);
 
   const handleEnterPortal = () => {
     if (hasEnoughTokens) {
       setIsVerified(true);
-      setActiveTab('utility'); // Terus bawa ke menu Utility lepas lulus
+      setActiveTab('utility'); 
     } else {
        alert("❌ Baki token tidak mencukupi.");
     }
   };
 
-  // --- STYLE CSS (MODEN & GELAP) ---
   const styles = {
     mainContainer: {
       backgroundColor: '#000000',
-      minHeight: '100vh',
+      minHeight: '100vh', 
+      width: '100%',
       color: '#ffffff',
       fontFamily: "'Inter', sans-serif",
-      paddingBottom: '80px', // Ruang untuk menu bawah
+      paddingBottom: '80px', 
       userSelect: 'none',
       WebkitUserSelect: 'none',
     },
-    // Screen Home (Login)
     homeWrapper: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: '90vh', // Penuhkan skrin
+      minHeight: '90vh',
       padding: '20px',
       textAlign: 'center',
     },
@@ -68,24 +69,19 @@ function App() {
       letterSpacing: '2px',
       margin: '0',
     },
-    subTitle: {
-      color: '#888',
-      fontSize: '13px',
-      marginTop: '5px',
-      marginBottom: '30px'
-    },
     balanceCard: {
-      background: 'linear-gradient(145deg, #111, #0a0a0a)',
+      background: '#111',
       border: '1px solid #333',
       borderRadius: '20px',
       padding: '25px',
       width: '100%',
       maxWidth: '320px',
       boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-      marginBottom: '30px'
+      marginBottom: '30px',
+      marginTop: '20px'
     },
     btnEnter: {
-      background: 'linear-gradient(90deg, #ff0000, #cc0000)',
+      background: '#ff0000',
       color: 'white',
       border: 'none',
       padding: '18px 0',
@@ -96,9 +92,7 @@ function App() {
       width: '100%',
       maxWidth: '300px',
       boxShadow: '0 0 25px rgba(255, 0, 0, 0.4)',
-      transition: 'transform 0.2s',
     },
-    // Menu Bawah (Navigation Bar)
     bottomNav: {
       position: 'fixed',
       bottom: 0,
@@ -117,7 +111,6 @@ function App() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      cursor: 'pointer',
     },
     activeNav: {
       color: '#ff0000',
@@ -129,47 +122,34 @@ function App() {
     }
   };
 
-  // --- RENDER HALAMAN (MUKA SURAT) ---
   const renderContent = () => {
-    if (!isVerified && activeTab !== 'home') {
-      return (
-        <div style={styles.homeWrapper}>
-           <h2 style={{color:'red'}}>🔒 LOCKED</h2>
-           <p>Sila log masuk di Home dahulu.</p>
-           <button onClick={()=>setActiveTab('home')} style={{...styles.btnEnter, width:'150px', fontSize:'14px'}}>Pergi Home</button>
-        </div>
-      )
-    }
+    if (!isVerified && activeTab !== 'home') return null;
 
     switch (activeTab) {
       case 'home':
         return (
           <div style={styles.homeWrapper}>
-            <img src={tokenImage} alt="1414 Token" style={styles.catImage} onError={(e)=>{e.target.style.display='none'; alert("Sila pastikan nama fail gambar betul di GitHub!")}} />
+            <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
             <h1 style={styles.title}>Portal 1414</h1>
-            <p style={styles.subTitle}>Exclusive Token Gated Access</p>
+            <p style={{color:'#888', fontSize:'13px'}}>Exclusive Token Gated Access</p>
 
             <div style={styles.balanceCard}>
-              <div style={{color: '#666', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px'}}>HOLDINGS</div>
+              <div style={{color: '#666', fontSize: '11px', textTransform: 'uppercase'}}>HOLDINGS</div>
               <div style={{fontSize: '42px', fontWeight: '800', margin: '5px 0', color: 'white'}}>{userTokenBalance.toFixed(1)}</div>
               <div style={{color: '#ff0000', fontSize: '14px', fontWeight: 'bold'}}>1414 TOKEN</div>
               
               <div style={{marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #222'}}>
                  {hasEnoughTokens ? 
-                   <span style={{color: '#00ff00', fontSize:'12px'}}>✅ LAYAK MASUK (≥{minRequired})</span> : 
-                   <span style={{color: 'red'}}>❌ TIDAK LAYAK</span>
+                   <span style={{color: '#00ff00', fontSize:'12px', fontWeight:'bold'}}>✅ ELIGIBLE (≥{minRequired})</span> : 
+                   <span style={{color: 'red'}}>❌ INELIGIBLE</span>
                  }
               </div>
             </div>
 
-            {isVerified ? (
-               <div style={{color:'#00ff00', border:'1px solid #00ff00', padding:'15px', borderRadius:'10px', width:'100%', maxWidth:'300px'}}>
-                 ✅ AKSES DIBENARKAN
-               </div>
-            ) : hasEnoughTokens ? (
+            {hasEnoughTokens ? (
               <button onClick={handleEnterPortal} style={styles.btnEnter}>ENTER PORTAL</button>
             ) : (
-              <div style={{color:'#555'}}>Beli token untuk masuk.</div>
+              <div style={{color:'#555'}}>Purchase tokens to enter.</div>
             )}
           </div>
         );
@@ -184,24 +164,18 @@ function App() {
 
   return (
     <div style={styles.mainContainer}>
-      
-      {/* KANDUNGAN UTAMA */}
       {renderContent()}
 
-      {/* MENU BAWAH (Hanya keluar bila dah verify) */}
       {isVerified && (
         <div style={styles.bottomNav}>
           <div style={activeTab === 'home' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('home')}>
-             <span style={{fontSize:'20px'}}>🏠</span>
-             Home
+             <span style={{fontSize:'20px'}}>🏠</span> Home
           </div>
           <div style={activeTab === 'utility' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('utility')}>
-             <span style={{fontSize:'20px'}}>🔧</span>
-             Utility
+             <span style={{fontSize:'20px'}}>🔧</span> Utility
           </div>
           <div style={activeTab === 'vote' ? {...styles.navItem, ...styles.activeNav} : styles.navItem} onClick={() => setActiveTab('vote')}>
-             <span style={{fontSize:'20px'}}>🗳️</span>
-             Vote
+             <span style={{fontSize:'20px'}}>🗳️</span> Vote
           </div>
         </div>
       )}
