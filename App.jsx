@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
 
-// Saya guna link luar yang stabil supaya gambar confirm keluar
-const tokenImage = "https://i.ibb.co/L6qbwym/cat-token.jpg"; 
+// 🔥 INI BAGIAN PENTING: Kita import gambar dari fail yang tuan dah upload
+import tokenImage from './token.jpg'; 
 
 function App() {
   const [isVerified, setIsVerified] = useState(false);
-  const userTokenBalance = 10.0; // Simulasi
+  const userTokenBalance = 10.0; 
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
 
@@ -30,14 +30,16 @@ function App() {
       alignItems: 'center',
       textAlign: 'center',
       padding: '20px',
-      userSelect: 'none', // 🔥 INI HALANG ORANG COPY TEKS
-      WebkitUserSelect: 'none', // Untuk Safari/iPhone
+      // 🔥 KOD RAHSIA HALANG ORANG COPY & TEKAN LAMA 🔥
+      userSelect: 'none', 
+      WebkitUserSelect: 'none',
+      WebkitTouchCallout: 'none', // Ini halang menu keluar bila tekan lama
     },
     catImage: {
-      width: '120px',
-      height: '120px',
+      width: '130px',
+      height: '130px',
       borderRadius: '50%',
-      border: '3px solid #ff0000',
+      border: '4px solid #ff0000',
       objectFit: 'cover',
       marginTop: '40px',
       marginBottom: '20px',
@@ -82,16 +84,23 @@ function App() {
       <div style={{...styles.wrapper, justifyContent: 'flex-start'}}>
         <img src={tokenImage} style={{...styles.catImage, width: '60px', height: '60px', marginTop: '10px'}} />
         <h2 style={{color: '#ff0000', marginTop: '10px'}}>🔓 ACCESS GRANTED</h2>
-        <p style={{color:'#888', fontSize:'12px'}}>Welcome to the Inner Circle.</p>
-        <KodUtility />
-        <Governance />
+        
+        {/* Bahagian Utility - Saya dah buang Alpha */}
+        <div style={{width: '100%', maxWidth: '350px', textAlign: 'left', marginTop: '20px'}}>
+           <KodUtility />
+        </div>
+        
+        <div style={{width: '100%', maxWidth: '350px', textAlign: 'left', marginTop: '10px'}}>
+           <Governance />
+        </div>
       </div>
     );
   }
 
   return (
     <div style={styles.wrapper}>
-      <img src={tokenImage} alt="1414 Token" style={styles.catImage} />
+      {/* Gambar Kucing Original Tuan */}
+      <img src={tokenImage} alt="1414 Token" style={styles.catImage} onError={(e)=>{e.target.style.display='none'; alert("Gambar tak jumpa!")}} />
 
       <h1 style={styles.title}>1414 ACCESS PORTAL</h1>
       <p style={{color: '#aaa', fontSize: '13px', marginTop: '5px'}}>Exclusive Token Gated Entry</p>
@@ -100,12 +109,11 @@ function App() {
         <div style={{color: '#888', fontSize: '11px', textTransform: 'uppercase'}}>Your Holdings</div>
         <div style={{fontSize: '36px', fontWeight: 'bold', margin: '10px 0'}}>{userTokenBalance.toFixed(1)} <span style={{fontSize:'18px'}}>1414</span></div>
         
-        {/* Status yang lebih profesional */}
         <div style={{borderTop: '1px solid #333', paddingTop: '15px', fontSize: '12px'}}>
             {hasEnoughTokens ? (
                 <span style={{color: '#00ff00', fontWeight: 'bold'}}>✅ ELIGIBLE FOR ENTRY</span>
             ) : (
-                <span style={{color: 'red', fontWeight: 'bold'}}>❌ INELIGIBLE (Need ≥{minRequired})</span>
+                <span style={{color: 'red', fontWeight: 'bold'}}>❌ INELIGIBLE</span>
             )}
         </div>
       </div>
@@ -115,7 +123,7 @@ function App() {
           ENTER PORTAL
         </button>
       ) : (
-        <div style={{padding:'15px', color:'#555', border:'1px solid #333', borderRadius:'10px', width:'100%', maxWidth:'300px'}}>
+        <div style={{padding:'15px', color:'#555', border:'1px solid #333', borderRadius:'10px'}}>
           Acquire tokens to proceed
         </div>
       )}
