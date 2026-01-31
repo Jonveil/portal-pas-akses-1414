@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
-
-// 🔥 SAYA DAH TUKAR BARIS NI UNTUK IKUT NAMA FAIL PANJANG TUAN 🔥
-import tokenImage from './token.jpg';
-
+import tokenImage from './alduin.jpg'; 
 
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
   
-  // Logik Token (Simulasi)
   const userTokenBalance = 10.0; 
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
 
-  // Kod Paksa Skrin Hitam Penuh
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
@@ -29,7 +24,7 @@ function App() {
       setIsVerified(true);
       setActiveTab('utility'); 
     } else {
-       alert("❌ Baki token tidak mencukupi.");
+       alert("Insufficient Balance.");
     }
   };
 
@@ -130,9 +125,7 @@ function App() {
       case 'home':
         return (
           <div style={styles.homeWrapper}>
-            {/* Kod ini akan baca gambar panjang tuan tu */}
-            <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'; alert("Masalah gambar!")}} />
-            
+            <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
             <h1 style={styles.title}>Portal 1414</h1>
             <p style={{color:'#888', fontSize:'13px'}}>Exclusive Token Gated Access</p>
 
