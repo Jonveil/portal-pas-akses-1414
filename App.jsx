@@ -1,37 +1,31 @@
 import React, { useState } from 'react';
-// Kita tak perlu import IDKitWidget buat masa ini
 import KodUtility from "./KodUtility";
 import Governance from "./Governance";
 
-// INI CARA BETUL UNTUK IMPORT GAMBAR DARI FOLDER SRC
-// Pastikan nama fail di GitHub ialah 'token.jpg'
-import tokenImage from './token.jpg'; 
+// KITA GUNA LINK INI SEBAB FAIL 'token.jpg' TAK JUMPA DALAM GITHUB
+const tokenImage = "https://i.ibb.co/L6qbwym/cat-token.jpg"; 
 
 function App() {
-  // State untuk tentukan sama ada pengguna dah berjaya masuk
   const [isVerified, setIsVerified] = useState(false);
 
-  // --- LOGIK TOKEN (SIMULASI BETA) ---
-  // Buat masa ini kita 'tipu' baki dia 10.0
-  // Nanti kita akan sambung ke wallet sebenar (Metamask/World App)
+  // --- LOGIK BETA (TANPA WORLD ID) ---
   const userTokenBalance = 10.0; 
   const minRequired = 1.0;
   const hasEnoughTokens = userTokenBalance >= minRequired;
 
-  // Fungsi bila tekan butang masuk
   const handleEnterPortal = () => {
     if (hasEnoughTokens) {
       setIsVerified(true);
-      alert("✅ Baki mencukupi! Selamat datang ke Portal 1414.");
+      alert("✅ Balance Verified! Welcome to 1414 Portal.");
     } else {
-       alert("❌ Baki tidak mencukupi.");
+       alert("❌ Insufficient Balance.");
     }
   };
 
-  // --- STYLE CSS (Tema Hitam & Merah) ---
+  // --- STYLE (HITAM & MERAH) ---
   const styles = {
     wrapper: {
-      backgroundColor: '#000000', // Hitam Pekat
+      backgroundColor: '#000000',
       minHeight: '100vh',
       color: '#ffffff',
       fontFamily: "'Inter', sans-serif",
@@ -44,25 +38,25 @@ function App() {
     catImage: {
       width: '130px',
       height: '130px',
-      borderRadius: '50%', // Bulat
-      border: '3px solid #ff0000', // Bingkai Merah
+      borderRadius: '50%',
+      border: '4px solid #ff0000',
       objectFit: 'cover',
       marginTop: '30px',
       marginBottom: '20px',
-      boxShadow: '0 0 30px rgba(255, 0, 0, 0.5)', // Kesan cahaya merah
-      backgroundColor: '#222' // Warna latar belakang jika gambar loading
+      boxShadow: '0 0 30px rgba(255, 0, 0, 0.5)',
+      backgroundColor: '#222'
     },
     title: {
       fontSize: '26px',
       fontWeight: '900',
       textTransform: 'uppercase',
-      color: '#ff0000', // Tulisan Merah
+      color: '#ff0000',
       margin: '5px 0',
       letterSpacing: '1px'
     },
     balanceCard: {
       backgroundColor: '#111',
-      border: '1px solid #ff0000', // Bingkai merah nipis
+      border: '1px solid #ff0000',
       borderRadius: '16px',
       padding: '25px',
       width: '100%',
@@ -77,7 +71,7 @@ function App() {
         margin: '10px 0'
     },
     btnEnter: {
-      background: 'linear-gradient(135deg, #ff0000 0%, #b30000 100%)', // Gradien Merah
+      background: 'linear-gradient(135deg, #ff0000 0%, #b30000 100%)',
       color: 'white',
       border: 'none',
       padding: '18px 40px',
@@ -103,7 +97,6 @@ function App() {
     }
   };
 
-  // --- PAPARAN SELEPAS MASUK (PORTAL) ---
   if (isVerified) {
     return (
       <div style={{...styles.wrapper, justifyContent: 'flex-start'}}>
@@ -115,44 +108,36 @@ function App() {
     );
   }
 
-  // --- PAPARAN DEPAN (GATE) ---
   return (
     <div style={styles.wrapper}>
-      
-      {/* GAMBAR KUCING YANG DI-IMPORT */}
       <img src={tokenImage} alt="1414 Token" style={styles.catImage} />
 
       <h1 style={styles.title}>1414 ACCESS PORTAL</h1>
       <p style={{color: '#aaa', fontSize: '14px'}}>Exclusive Token Gated Entry</p>
 
-      {/* KAD BAKI */}
       <div style={styles.balanceCard}>
         <div style={{color: '#888', fontSize: '12px', textTransform: 'uppercase'}}>Your Holdings</div>
         <div style={styles.balanceValue}>{userTokenBalance.toFixed(1)} <span style={{fontSize:'20px'}}>1414</span></div>
         
-        {/* Status Syarat */}
         <div style={{marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #333'}}>
             {hasEnoughTokens ? (
-                <span style={{color: '#00ff00', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <span style={{color: '#00ff00', fontWeight: 'bold'}}>
                     ✅ Requirement Met (≥{minRequired})
                 </span>
             ) : (
                 <span style={{color: 'red', fontWeight: 'bold'}}>
-                    ❌ Insufficient Balance (Need ≥{minRequired})
+                    ❌ Insufficient Balance
                 </span>
             )}
         </div>
       </div>
 
-      {/* BUTANG MASUK (Hanya muncul jika cukup token) */}
       {hasEnoughTokens ? (
         <button onClick={handleEnterPortal} style={styles.btnEnter}>
           ENTER PORTAL
         </button>
       ) : (
-        <div style={styles.disabledBtn}>
-          Buy more 1414 tokens to enter
-        </div>
+        <div style={styles.disabledBtn}>Buy tokens to enter</div>
       )}
 
     </div>
