@@ -1,20 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Utility() {
-  // Data Asal (Dummy) - Boleh buang atau tambah
-  const [ideas, setIdeas] = useState([
-    { id: 1, text: "Launch 1414 Hoodie", likes: 42, liked: false },
-    { id: 2, text: "Collab with Worldcoin", likes: 25, liked: false },
-    { id: 3, text: "Kuala Lumpur Meetup", likes: 15, liked: false },
-  ]);
-
+  // --- STATE ---
+  const [ideas, setIdeas] = useState([]);
   const [newIdea, setNewIdea] = useState("");
 
-  // Fungsi: Bila tekan api, nombor naik & auto susun
+  // 1. LOAD DATA (Bila app mula, tarik data dari simpanan phone)
+  useEffect(() => {
+    const savedIdeas = localStorage.getItem("my_ideas");
+    if (savedIdeas) {
+      setIdeas(JSON.parse(savedIdeas));
+    } else {
+      // Data permulaan kalau tak ada apa-apa lagi
+      setIdeas([
+        { id: 1, text: "Launch 1414 Hoodie", likes: 42, liked: false },
+        { id: 2, text: "Collab with Worldcoin", likes: 25, liked: false },
+      ]);
+    }
+  }, []);
+
+  // 2. SIMPAN DATA (Setiap kali data berubah, simpan dalam phone)
+  useEffect(() => {
+    localStorage.setItem("my_ideas", JSON.stringify(ideas));
+  }, [ideas]);
+
+  // Fungsi: Like & Auto-Sort
   const toggleLike = (id) => {
     const updatedIdeas = ideas.map((idea) => {
       if (idea.id === id) {
-        // Kalau dah like, dia unlike. Kalau belum, dia like.
         return { 
           ...idea, 
           likes: idea.liked ? idea.likes - 1 : idea.likes + 1, 
@@ -23,29 +36,31 @@ function Utility() {
       }
       return idea;
     });
-    
-    // 🔥 AUTO SORT: Yang paling tinggi like terus naik atas
     setIdeas(updatedIdeas.sort((a, b) => b.likes - a.likes)); 
   };
 
-  // Fungsi: Tambah idea baru TANPA POPUP
+  // Fungsi: Tambah Idea Baru
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newIdea) return; // Kalau kosong tak jadi apa
+    if (!newIdea) return;
 
-    // Cipta idea baru
     const newItem = { 
-      id: Date.now(), // Guna masa sebagai ID unik
+      id: Date.now(), // ID unik ikut masa
       text: newIdea, 
       likes: 0, 
       liked: false 
     };
 
-    // Masukkan idea baru ke dalam senarai sedia ada
     setIdeas([newItem, ...ideas]); 
-    
-    // Kosongkan kotak tulis
     setNewIdea(""); 
+  };
+
+  // 🔥 FUNGSI BARU: DELETE (Hapus Idea)
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this idea?")) {
+      const filteredIdeas = ideas.filter((idea) => idea.id !== id);
+      setIdeas(filteredIdeas);
+    }
   };
 
   // --- STYLE ---
@@ -104,72 +119,53 @@ function Utility() {
         </div>
       </div>
 
-      {/* 3. COMMUNITY VOICE (INTERAKTIF) */}
+      {/* 3. COMMUNITY VOICE (LIVE DATA + DELETE) */}
       <h2 style={{color: '#ff0000', margin: '30px 0 10px 0', textTransform: 'uppercase', fontSize:'18px'}}>💡 Community Voice</h2>
-      <p style={{color:'#666', fontSize:'12px', marginBottom:'20px'}}>Top voted ideas will be prioritized.</p>
-
-      {/* Submit Form (ATAS) */}
+      
+      {/* Form Input */}
       <form onSubmit={handleSubmit} style={{marginBottom:'20px', display:'flex', gap:'10px'}}>
          <input 
            type="text" 
-           placeholder="Write your idea here..." 
+           placeholder="Suggest an idea..." 
            value={newIdea}
            onChange={(e)=>setNewIdea(e.target.value)}
            style={{
-             flex:1, 
-             padding:'12px', 
-             borderRadius:'10px', 
-             border:'1px solid #333', 
-             background:'#111', 
-             color:'white',
-             outline: 'none'
+             flex:1, padding:'12px', borderRadius:'10px', border:'1px solid #333', 
+             background:'#111', color:'white', outline: 'none'
            }}
          />
          <button type="submit" style={{
-           padding:'0 20px', 
-           borderRadius:'10px', 
-           background:'#ff0000', 
-           color:'white', 
-           border:'none', 
-           fontWeight:'bold',
-           fontSize:'20px',
-           cursor:'pointer'
+           padding:'0 20px', borderRadius:'10px', background:'#ff0000', 
+           color:'white', border:'none', fontWeight:'bold', fontSize:'20px'
          }}>+</button>
       </form>
 
-      {/* List Idea (LIVE UPDATE) */}
+      {/* Senarai Idea */}
       <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
         {ideas.map((idea, index) => (
           <div key={idea.id} style={{
             backgroundColor: '#111', 
-            border: idea.liked ? '1px solid #ff0000' : '1px solid #333', // Merah kalau dah like
-            borderRadius: '12px', 
-            padding: '15px', 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            transition: 'all 0.3s ease' // Animasi lembut
+            border: idea.liked ? '1px solid #ff0000' : '1px solid #333', 
+            borderRadius: '12px', padding: '15px', 
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
           }}>
-            <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
+            <div style={{display:'flex', gap:'15px', alignItems:'center', flex:1}}>
               <div style={{fontSize:'18px', fontWeight:'900', color: index === 0 ? '#ff0000' : '#444'}}>
                 #{index + 1}
               </div>
-              <div style={{color:'white', fontWeight:'bold', fontSize:'13px', maxWidth:'200px'}}>
-                {idea.text}
+              <div style={{textAlign:'left'}}>
+                 <div style={{color:'white', fontWeight:'bold', fontSize:'13px', wordBreak:'break-word'}}>{idea.text}</div>
+                 {/* Butang Delete Kecil (Simulasi Owner Delete) */}
+                 <div onClick={() => handleDelete(idea.id)} style={{color:'#555', fontSize:'10px', marginTop:'5px', cursor:'pointer', textDecoration:'underline'}}>
+                    Delete
+                 </div>
               </div>
             </div>
             
             <button onClick={() => toggleLike(idea.id)} style={{
-                background: idea.liked ? '#ff0000' : '#222', 
-                color: 'white', 
-                border: 'none',
-                padding: '8px 12px', 
-                borderRadius: '8px', 
-                cursor: 'pointer', 
-                minWidth:'50px',
-                display:'flex',
-                alignItems:'center',
-                gap:'5px'
+                background: idea.liked ? '#ff0000' : '#222', color: 'white', border: 'none',
+                padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', minWidth:'50px',
+                display:'flex', alignItems:'center', gap:'5px', marginLeft:'10px'
               }}>
               <span>🔥</span> 
               <span style={{fontSize:'12px', fontWeight:'bold'}}>{idea.likes}</span>
