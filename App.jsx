@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from "ethers"; 
 import LinksPage from "./KodUtility"; 
 import IdeasPage from "./Governance";
 import tokenImage from './alduin.jpg'; 
@@ -7,9 +6,6 @@ import tokenImage from './alduin.jpg';
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
-  const [userWallet, setUserWallet] = useState(null); 
-  // State baru untuk status mesej (ganti alert popup)
-  const [statusMsg, setStatusMsg] = useState(""); 
 
   // Force Full Black Screen
   useEffect(() => {
@@ -18,43 +14,7 @@ function App() {
     document.body.style.margin = "0";
     document.body.style.height = "100%";
     document.getElementById('root').style.height = "100%";
-    
-    checkWalletConnection();
   }, []);
-
-  const checkWalletConnection = async () => {
-    if (window.ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const accounts = await provider.listAccounts();
-        if (accounts.length > 0) {
-          setUserWallet(accounts[0]); 
-        }
-      } catch (err) {
-        console.log("Silent check failed");
-      }
-    }
-  };
-
-  const connectWallet = async () => {
-    setStatusMsg("Connecting..."); // Tunjuk status sedang loading
-
-    if (window.ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setUserWallet(address);
-        setStatusMsg(""); // Kosongkan status bila berjaya
-      } catch (err) {
-        setStatusMsg("❌ Connection Rejected"); // Tulis kat bawah butang
-      }
-    } else {
-      // INI YANG PENTING: Jangan guna alert()
-      setStatusMsg("⚠️ Wallet not found. Please open inside Metamask or World App Browser.");
-    }
-  };
 
   const handleEnterPortal = () => {
     setIsVerified(true);
@@ -70,30 +30,6 @@ function App() {
     mysteryBox: { border: '1px solid #333', borderRadius: '16px', padding: '30px 20px', width: '100%', maxWidth: '280px', margin: '40px 0', background: 'linear-gradient(180deg, #111 0%, #000 100%)', boxShadow: 'inset 0 0 20px rgba(255,0,0,0.1)' },
     mysteryText: { color: '#ff0000', fontSize: '20px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', margin: 0, textShadow: '0 0 5px rgba(255, 0, 0, 0.8)' },
     enterBtn: { background: '#ff0000', color: 'white', border: 'none', padding: '15px 40px', borderRadius: '50px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 20px rgba(255, 0, 0, 0.6)', letterSpacing: '2px', marginTop: '10px', textTransform: 'uppercase' },
-    
-    // Style baru untuk butang wallet
-    walletBtn: { 
-      background: 'transparent', 
-      color: userWallet ? '#00ff00' : '#555', 
-      border: userWallet ? '1px solid #00ff00' : '1px solid #333', 
-      padding: '10px 20px', 
-      borderRadius: '50px', 
-      fontSize: '12px', 
-      cursor: 'pointer', 
-      marginTop: '20px', 
-      textTransform: 'uppercase',
-      transition: 'all 0.3s'
-    },
-    
-    // Style untuk mesej error
-    statusText: {
-      color: '#ff4444',
-      fontSize: '11px',
-      marginTop: '10px',
-      maxWidth: '250px',
-      lineHeight: '1.4'
-    },
-
     bottomNav: { position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: '#0a0a0a', borderTop: '1px solid #333', display: 'flex', justifyContent: 'space-around', padding: '12px 0', zIndex: 1000, paddingBottom: '20px' },
     navItem: { color: '#555', fontSize: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', width: '60px' },
     activeNav: { color: '#ff0000', fontWeight: 'bold' },
@@ -115,21 +51,13 @@ function App() {
           </div>
 
           <button onClick={handleEnterPortal} style={styles.enterBtn}>ENTER PORTAL</button>
-          
-          {/* Butang Connect Tanpa Popup */}
-          <button onClick={connectWallet} style={styles.walletBtn}>
-            {userWallet ? `✅ ID: ${userWallet.slice(0,6)}...` : "🔌 CONNECT ID (OPTIONAL)"}
-          </button>
-
-          {/* Mesej Ralat Keluar Kat Sini (Bukan Popup) */}
-          {statusMsg && <p style={styles.statusText}>{statusMsg}</p>}
-
         </div>
       );
     }
 
     switch (activeTab) {
-      case 'home': return <div style={styles.pageContent}><LinksPage currentUser={userWallet} /></div>;
+      // Kita tak payah pass userWallet lagi, KodUtility akan handle sendiri
+      case 'home': return <div style={styles.pageContent}><LinksPage /></div>;
       case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
       case 'soon': return (
           <div style={{...styles.pageContent, textAlign:'center', paddingTop:'100px'}}>
