@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from "ethers"; // Kita perlu ini untuk baca wallet
+import { ethers } from "ethers"; 
 import LinksPage from "./KodUtility"; 
 import IdeasPage from "./Governance";
 import tokenImage from './alduin.jpg'; 
@@ -7,9 +7,9 @@ import tokenImage from './alduin.jpg';
 function App() {
   const [activeTab, setActiveTab] = useState('home'); 
   const [isVerified, setIsVerified] = useState(false);
-  const [userWallet, setUserWallet] = useState(null); // Simpan alamat wallet pengguna
+  const [userWallet, setUserWallet] = useState(null); 
 
-  // Setup Skrin Hitam
+  // Force Full Black Screen
   useEffect(() => {
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.backgroundColor = "#000000";
@@ -17,7 +17,7 @@ function App() {
     document.body.style.height = "100%";
     document.getElementById('root').style.height = "100%";
     
-    // Cuba check wallet senyap-senyap (kalau user dah pernah connect)
+    // Silent check for existing connection
     checkWalletConnection();
   }, []);
 
@@ -27,10 +27,10 @@ function App() {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.listAccounts();
         if (accounts.length > 0) {
-          setUserWallet(accounts[0]); // Ambil alamat wallet pertama
+          setUserWallet(accounts[0]); 
         }
       } catch (err) {
-        console.log("Wallet not connected yet");
+        console.log("Wallet check failed", err);
       }
     }
   };
@@ -47,7 +47,7 @@ function App() {
         alert("Connection failed");
       }
     } else {
-      alert("Please install Metamask or use World App");
+      alert("Please install Metamask or use World App Browser");
     }
   };
 
@@ -56,9 +56,8 @@ function App() {
     setActiveTab('home'); 
   };
 
-  // Styles (Sama macam dulu)
   const styles = {
-    mainContainer: { backgroundColor: '#000000', minHeight: '100vh', width: '100%', color: '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: '80px', userSelect: 'none', WebkitUserSelect: 'none' },
+    mainContainer: { backgroundColor: '#000000', minHeight: '100vh', width: '100%', color: '#ffffff', fontFamily: "'Inter', sans-serif", paddingBottom: '80px', userSelect: 'none', WebkitUserSelect: 'none' },
     loginWrapper: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90vh', padding: '20px', textAlign: 'center' },
     catImage: { width: '130px', height: '130px', borderRadius: '50%', border: '3px solid #ff0000', objectFit: 'cover', marginBottom: '20px', boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)' },
     title: { fontSize: '28px', fontWeight: '900', textTransform: 'uppercase', color: '#ff0000', letterSpacing: '4px', margin: '0', textShadow: '0 0 10px #ff0000' },
@@ -78,6 +77,7 @@ function App() {
       return (
         <div style={styles.loginWrapper}>
           <img src={tokenImage} alt="1414" style={styles.catImage} onError={(e)=>{e.target.style.display='none'}} />
+          
           <h1 style={styles.title}>PORTAL 1414</h1>
           <p style={styles.subTitle}>The Gate Opens</p>
 
@@ -88,7 +88,6 @@ function App() {
 
           <button onClick={handleEnterPortal} style={styles.enterBtn}>ENTER PORTAL</button>
           
-          {/* Butang Connect Wallet (Pilihan untuk Identity) */}
           <button onClick={connectWallet} style={styles.walletBtn}>
             {userWallet ? `ID: ${userWallet.slice(0,6)}...${userWallet.slice(-4)}` : "🔌 Connect ID (Optional)"}
           </button>
@@ -97,7 +96,7 @@ function App() {
     }
 
     switch (activeTab) {
-      // 🔥 KITA HANTAR ID USER KE KODUTILITY 🔥
+      // Pass currentUser wallet to the Utility page for Admin checks
       case 'home': return <div style={styles.pageContent}><LinksPage currentUser={userWallet} /></div>;
       case 'ideas': return <div style={styles.pageContent}><IdeasPage /></div>;
       case 'soon': return (
