@@ -9,9 +9,8 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      // 🔥 INI BAHAGIAN PENTING:
-      // Kita ikut arahan Vercel sebiji-sebiji.
-      // Kita senaraikan fail yang dia tak jumpa supaya dia 'skip' dan tak error.
+      // 🔥 INI BAHAGIAN WAJIB ADA 🔥
+      // Kita senaraikan fail yang Vercel tak jumpa supaya dia tak error.
       external: [
         "@safe-global/safe-ethers-adapters",
         "@safe-global/safe-core-sdk",
