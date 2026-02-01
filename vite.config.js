@@ -8,8 +8,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      // 🔥 HELAH SAKTI:
-      // Bila Vercel cari fail 'hantu' tu, kita bagi dia 'ethers' supaya dia diam.
+      // INI HELAH DIA: Kita paksa dia guna 'ethers' bila dia cari fail hantu tu
       "@safe-window/safe-ethers-adapters": "ethers",
     },
   },
