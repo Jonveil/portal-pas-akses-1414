@@ -11,6 +11,9 @@
     "@thirdweb-dev/sdk": "^4.0.99",
     "@thirdweb-dev/chains": "^0.1.77",
     "@worldcoin/idkit": "^1.1.0",
+    "@safe-global/safe-ethers-adapters": "^0.1.0",
+    "@safe-global/safe-core-sdk": "^3.3.5",
+    "@safe-global/safe-service-client": "^2.0.1",
     "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
