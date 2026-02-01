@@ -9,7 +9,7 @@
   "dependencies": {
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^4.0.99",
-    "@thirdweb-dev/chains": "^0.1.0",
+    "@thirdweb-dev/chains": "^0.1.70",
     "@worldcoin/idkit": "^1.1.0",
     "ethers": "^5.7.2",
     "react": "^18.2.0",
