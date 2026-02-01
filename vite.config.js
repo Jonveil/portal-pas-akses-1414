@@ -4,7 +4,13 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Ubat wajib untuk Web3
     "global": "window",
+  },
+  resolve: {
+    alias: {
+      // 🔥 HELAH SAKTI:
+      // Bila Vercel cari fail 'hantu' tu, kita bagi dia 'ethers' supaya dia diam.
+      "@safe-window/safe-ethers-adapters": "ethers",
+    },
   },
 });
