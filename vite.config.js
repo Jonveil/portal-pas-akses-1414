@@ -7,16 +7,10 @@ export default defineConfig({
     "global": "window",
     "process.env": {},
   },
-  build: {
-    rollupOptions: {
-      // 🔥 INI UBATNYA: Kita ikut cakap error log tu.
-      // Kita suruh Vercel JANGAN bundle benda-benda ni.
-      external: [
-        "@safe-global/safe-ethers-adapters",
-        "@safe-global/safe-core-sdk",
-        "@safe-global/safe-service-client"
-      ],
+  resolve: {
+    alias: {
+      // Kalau dia cari Safe Adapter, kita bagi dia Ethers (Plan B)
+      "@safe-global/safe-ethers-adapters": "ethers",
     },
   },
 });
-
