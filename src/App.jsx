@@ -1,3 +1,6 @@
+// trigger fresh build
+// rebuild
+
 import React, { useState } from "react";
 import { ConnectWallet, useAddress, useContract, useNFTBalance } from "@thirdweb-dev/react";
 import Governance from "./Governance.jsx";
