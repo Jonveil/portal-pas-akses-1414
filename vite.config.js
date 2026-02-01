@@ -7,11 +7,16 @@ export default defineConfig({
     "global": "window",
     "process.env": {},
   },
-  resolve: {
-    alias: {
-      // 🔥 HELAH PENYELAMAT:
-      // Bila Vercel cari fail adapter tu, kita redirect ke 'ethers' supaya dia tak error.
-      "@safe-global/safe-ethers-adapters": "ethers",
+  build: {
+    rollupOptions: {
+      // 🔥 INI UBATNYA: Kita ikut cakap error log tu.
+      // Kita suruh Vercel JANGAN bundle benda-benda ni.
+      external: [
+        "@safe-global/safe-ethers-adapters",
+        "@safe-global/safe-core-sdk",
+        "@safe-global/safe-service-client"
+      ],
     },
   },
 });
+
