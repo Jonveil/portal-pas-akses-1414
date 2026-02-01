@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ConnectWallet, useAddress, useContract, useNFTBalance } from "@thirdweb-dev/react";
-import Governance from "./Governance";
-import Utility from "./KodUtility"; 
+import Governance from "./Governance.jsx";
+import Utility from "./KodUtility.jsx";
 
 // Contract Tuan
 const CONTRACT_ADDRESS = "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
