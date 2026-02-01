@@ -1,130 +1,98 @@
-import React, { useState } from "react";
-import tokenImage from './alduin.jpg'; 
+import React from "react";
+import { 
+  MediaRenderer, 
+  Web3Button, 
+  useContract, 
+  useContractMetadata, 
+  useTotalCirculatingSupply 
+} from "@thirdweb-dev/react";
 
-function Governance() {
-  // Simulasi Data Jualan
-  const total = 1414;
-  const [sold, setSold] = useState(890); // Mula dengan 890
-  const [isMinting, setIsMinting] = useState(false);
-  const [hasMinted, setHasMinted] = useState(false);
+// ✅ INI ALAMAT CONTRACT BARU TUAN (World Chain)
+const CONTRACT_ADDRESS = "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
 
-  // Kira peratusan untuk bar merah
-  const percentage = (sold / total) * 100;
+const Governance = () => {
+  const { contract } = useContract(CONTRACT_ADDRESS);
+  const { data: contractMetadata, isLoading: isMetadataLoading } = useContractMetadata(contract);
+  const { data: totalCirculatingSupply } = useTotalCirculatingSupply(contract);
 
-  const handleMint = () => {
-    if (hasMinted) return; // Kalau dah beli, tak boleh beli lagi
-
-    setIsMinting(true); // Mula loading
-
-    // Simulasi Blockchain Delay (2 saat)
-    setTimeout(() => {
-      setSold(sold + 1); // Tambah nombor jualan
-      setHasMinted(true); // Set status dah beli
-      setIsMinting(false); // Stop loading
-      // Tiada popup alert, semua berlaku di butang
-    }, 2000);
+  // Style mudah & kemas
+  const styles = {
+    container: { textAlign: "center", color: "white", padding: "20px", fontFamily: "sans-serif" },
+    card: { 
+      background: "linear-gradient(180deg, #1a1a1a 0%, #000 100%)", 
+      borderRadius: "20px", 
+      padding: "30px", 
+      maxWidth: "400px", 
+      margin: "0 auto",
+      border: "1px solid #333",
+      boxShadow: "0 0 20px rgba(0, 255, 0, 0.2)" // Glow hijau sikit
+    },
+    imageWrapper: { 
+      borderRadius: "15px", 
+      overflow: "hidden", 
+      marginBottom: "20px",
+      border: "2px solid #444",
+      height: "300px",
+      width: "100%",
+    },
+    title: { fontSize: "22px", fontWeight: "bold", margin: "10px 0", color: "#fff" },
+    desc: { fontSize: "14px", color: "#aaa", marginBottom: "20px" },
+    statsRow: { display: "flex", justifyContent: "space-between", marginBottom: "25px", padding: "0 20px" },
+    statBox: { textAlign: "center" },
+    statValue: { fontSize: "18px", fontWeight: "bold", color: "#fff" },
+    statLabel: { fontSize: "10px", color: "#666", textTransform: "uppercase" }
   };
-
-  // --- STYLES ---
-  const cardStyle = {
-    background: 'linear-gradient(145deg, #111, #0a0a0a)',
-    border: '1px solid #333', borderRadius: '20px',
-    padding: '20px', textAlign: 'center', marginBottom: '20px'
-  };
-
-  const phaseStyle = (active) => ({
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '15px', borderRadius: '12px', marginBottom: '10px',
-    border: active ? '1px solid #ff0000' : '1px solid #222',
-    background: active ? '#1a0000' : '#111',
-    opacity: active ? 1 : 0.5
-  });
 
   return (
-    <div style={{paddingBottom:'100px'}}>
-      
-      {/* HEADER */}
-      <div style={{textAlign:'center', marginBottom:'30px'}}>
-         <img src={tokenImage} style={{
-             width: '180px', height: '180px', borderRadius: '20px', 
-             border: '4px solid #ff0000', objectFit: 'cover',
-             boxShadow: '0 0 40px rgba(255,0,0,0.4)'
-         }} />
-         <h1 style={{fontSize:'24px', color:'white', margin:'15px 0 5px 0', textTransform:'uppercase'}}>1414 Agent Card</h1>
-         <p style={{color:'#ff0000', fontSize:'12px', letterSpacing:'2px', margin:0}}>GENESIS COLLECTION</p>
-      </div>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        
+        {/* GAMBAR NFT */}
+        <div style={styles.imageWrapper}>
+          {!isMetadataLoading && contractMetadata?.image ? (
+             <MediaRenderer src={contractMetadata.image} style={{width:"100%", height:"100%", objectFit:"cover"}} />
+          ) : (
+             <div style={{display:"flex", alignItems:"center", justifyContent:"center", height:"100%", color:"#666"}}>Loading Image...</div>
+          )}
+        </div>
 
-      {/* PROGRESS BAR */}
-      <div style={cardStyle}>
-         <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', fontSize:'12px', color:'#ccc'}}>
-            <span>Minted</span>
-            <span style={{color: hasMinted ? '#00ff00' : 'white', fontWeight:'bold'}}>
-                {sold} / {total}
-            </span>
-         </div>
-         <div style={{height:'10px', width:'100%', background:'#333', borderRadius:'5px', overflow:'hidden'}}>
-            <div style={{
-                height:'100%', 
-                width: `${percentage}%`, 
-                background: hasMinted ? '#00ff00' : '#ff0000',
-                transition: 'width 0.5s ease'
-            }}></div>
-         </div>
-      </div>
+        {/* TAJUK & INFO */}
+        <h2 style={styles.title}>{contractMetadata?.name || "PORTAL 1414 AGENT"}</h2>
+        <p style={styles.desc}>Exclusive Genesis Pass for early adopters.</p>
 
-      {/* MINT PHASES */}
-      <h3 style={{color:'white', fontSize:'14px', marginBottom:'15px', textTransform:'uppercase', color:'#888'}}>Mint Schedule</h3>
-      
-      <div style={phaseStyle(true)}>
-         <div>
-            <div style={{color:'#ff0000', fontWeight:'bold', fontSize:'12px'}}>PHASE 1 (LIVE)</div>
-            <div style={{color:'white', fontWeight:'bold', fontSize:'14px'}}>Early Bird</div>
-         </div>
-         <div style={{textAlign:'right'}}>
-            <div style={{color:'white', fontWeight:'bold'}}>1 USDC</div>
-            <div style={{color:'#00ff00', fontSize:'10px'}}>Active</div>
-         </div>
-      </div>
+        {/* STATISTIK */}
+        <div style={styles.statsRow}>
+           <div style={styles.statBox}>
+              <div style={styles.statValue}>
+                {totalCirculatingSupply ? totalCirculatingSupply.toString() : "0"} / 14
+              </div>
+              <div style={styles.statLabel}>Claimed</div>
+           </div>
+           <div style={styles.statBox}>
+              <div style={{...styles.statValue, color: "#00ff00"}}>FREE</div>
+              <div style={styles.statLabel}>Price</div>
+           </div>
+        </div>
 
-      <div style={phaseStyle(false)}>
-         <div>
-            <div style={{color:'#666', fontWeight:'bold', fontSize:'12px'}}>PHASE 2</div>
-            <div style={{color:'#aaa', fontWeight:'bold', fontSize:'14px'}}>Public</div>
-         </div>
-         <div style={{textAlign:'right'}}>
-            <div style={{color:'#aaa', fontWeight:'bold'}}>2 USDC</div>
-            <div style={{color:'#666', fontSize:'10px'}}>Locked</div>
-         </div>
-      </div>
-
-      {/* BUTANG MINT INTERAKTIF */}
-      <div style={{
-          position: 'fixed', bottom: '90px', left: '0', width: '100%', 
-          padding: '0 20px', boxSizing: 'border-box'
-      }}>
-        <button 
-          onClick={handleMint}
-          disabled={isMinting || hasMinted}
-          style={{
-            background: hasMinted ? '#111' : (isMinting ? '#555' : '#ff0000'), 
-            color: hasMinted ? '#00ff00' : 'white', 
-            border: hasMinted ? '1px solid #00ff00' : 'none', 
-            padding: '18px 0',
-            borderRadius: '15px', 
-            fontSize: '18px', 
-            fontWeight: 'bold', 
-            cursor: hasMinted ? 'default' : 'pointer',
-            width: '100%', 
-            boxShadow: hasMinted ? 'none' : '0 0 25px rgba(255,0,0,0.4)',
-            transition: 'all 0.3s'
-          }}
+        {/* BUTANG CLAIM (ACTION) */}
+        <Web3Button
+          contractAddress={CONTRACT_ADDRESS}
+          action={(contract) => contract.erc721.claim(1)}
+          onSuccess={() => alert("✅ TAHNIAH! Anda kini Agent rasmi.")}
+          onError={(error) => alert("❌ Gagal: " + error.message)}
+          theme="dark"
+          style={{ width: "100%", fontWeight: "bold", padding: "15px" }}
         >
-           {isMinting ? "⏳ PROCESSING..." : (hasMinted ? "✅ YOU OWN THIS NFT" : "MINT NOW (1 USDC)")}
-        </button>
-      </div>
+          CLAIM AGENT PASS
+        </Web3Button>
 
+        <p style={{marginTop:"15px", fontSize:"10px", color:"#444"}}>
+           Gas fee ditanggung oleh World Chain (jika guna World App)
+        </p>
+
+      </div>
     </div>
   );
-}
+};
 
 export default Governance;
