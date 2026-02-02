@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 function App() {
   const [entered, setEntered] = useState(false);
 
-  // --- STYLE ---
+  // ✅ LINK RASMI TUAN (Dah dimasukkan)
+  const MINT_LINK = "https://thirdweb.com/world-chain/0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4"; 
+
+  // --- STYLE (Center, Kemas & Kucing Tegak) ---
   const styles = {
     container: {
       backgroundColor: 'black',
@@ -24,7 +27,6 @@ function App() {
       marginBottom: '25px',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
       width: '100%',
     },
     catImage: {
@@ -32,17 +34,16 @@ function App() {
       height: '180px',
       borderRadius: '50%',
       border: '4px solid #ff0000',
-      boxShadow: '0 0 35px #ff0000', // Glow kuat
+      boxShadow: '0 0 40px #ff0000',
       objectFit: 'cover',
-      // SAYA DAH BUANG "ROTATE". KUCING AKAN TEGAK SEKARANG.
-      transform: 'scale(1.0)', 
+      transform: 'scale(1.0)', // Tegak & Center
       backgroundColor: '#111',
     },
     title: {
       fontSize: '2.5rem',
       color: '#ff0000',
       textShadow: '0 0 20px #ff0000',
-      fontWeight: '900', // Paling tebal
+      fontWeight: '900',
       letterSpacing: '5px',
       margin: '10px 0',
       textTransform: 'uppercase',
@@ -70,7 +71,7 @@ function App() {
       backgroundColor: '#ff0000',
       color: 'white',
       border: 'none',
-      padding: '20px 70px', // Butang lebih lebar
+      padding: '20px 70px',
       fontSize: '1.2rem',
       fontWeight: 'bold',
       borderRadius: '50px',
@@ -121,19 +122,18 @@ function App() {
 
           <div style={styles.nftCard}>
              <div style={{width:'100%', height:'180px', background:'#1a1a1a', borderRadius:'15px', marginBottom:'20px', overflow:'hidden', border:'1px solid #333'}}>
-                {/* Letak gambar NFT sebenar di sini nanti */}
-                <img src="/alduin.jpg" style={{width:'100%', height:'100%', objectFit:'cover'}} />
+                <img src="/alduin.jpg" style={{width:'100%', height:'100%', objectFit:'cover'}} alt="NFT Preview"/>
              </div>
             <h3 style={{color:'white', margin:'0 0 5px 0', fontSize:'1.4rem'}}>GENESIS PASS</h3>
-            <p style={{color:'#666', fontSize:'0.8rem', margin:0}}>Edition of 1414 • Optimism Network</p>
+            <p style={{color:'#666', fontSize:'0.8rem', margin:0}}>Official World Chain Pass • Free</p>
             
-            {/* LINK ZORA DI SINI */}
-            <a href="https://zora.co" target="_blank" rel="noreferrer" style={styles.claimButton}>
-              MINT FREE NFT &rarr;
+            {/* Butang ini akan buka link Thirdweb Tuan */}
+            <a href={MINT_LINK} target="_blank" rel="noreferrer" style={styles.claimButton}>
+              CLAIM NFT (WORLD CHAIN) &rarr;
             </a>
           </div>
 
-          <button onClick={() => setEntered(false)} style={{marginTop: '50px', background: 'none', border: '1px solid #333', padding:'10px 30px', borderRadius:'20px', color: '#666', fontSize:'0.8rem'}}>
+          <button onClick={() => setEntered(false)} style={{marginTop: '50px', background: 'none', border: '1px solid #333', padding:'10px 30px', borderRadius:'20px', color: '#666', fontSize:'0.8rem', cursor:'pointer'}}>
             LOGOUT
           </button>
         </div>
@@ -144,12 +144,7 @@ function App() {
   return (
     <div style={styles.container}>
       <div style={styles.logoContainer}>
-        <img 
-          src="/alduin.jpg" 
-          alt="Agent 1414" 
-          style={styles.catImage}
-          onError={(e) => {e.target.style.display='none'}} 
-        />
+        <img src="/alduin.jpg" alt="Agent 1414" style={styles.catImage} onError={(e) => {e.target.style.display='none'}} />
       </div>
 
       <h1 style={styles.title}>PORTAL 1414</h1>
@@ -157,7 +152,7 @@ function App() {
 
       <div style={styles.statusBox}>
         <p style={{color:'#444', fontSize:'0.7rem', margin:'0 0 8px 0', letterSpacing:'2px'}}>SYSTEM STATUS</p>
-        <p style={styles.statusValue}>ONLINE</p>
+        <p style={{color: '#ff0000', fontSize: '1.2rem', fontWeight: 'bold', margin: 0, textShadow: '0 0 8px #ff0000'}}>ONLINE</p>
       </div>
 
       <button style={styles.enterButton} onClick={() => setEntered(true)}>
@@ -172,3 +167,4 @@ function App() {
 }
 
 export default App;
+ 
