@@ -9,14 +9,12 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      // 🔥 KUASA VETO (EXTERNALIZATION) 🔥
-      // Kita senaraikan semua fail yang error tadi.
-      // Vite akan skip fail-fail ini dan teruskan build sampai siap.
+      // 🔥 KUASA VETO (REGEX) 🔥
+      // Kita tak payah tulis nama penuh.
+      // Kita suruh dia abaikan SEMUA fail yang mula dengan '@safe-'
       external: [
-        "@safe-global/safe-ethers-adapters",
-        "@safe-global/safe-core-sdk",
-        "@safe-global/safe-service-client",
-        "@safe-window/safe-ethers-adapters" // Tambah ini sebab log tuan sebut nama ni
+        /^@safe-global\/.*$/,
+        /^@safe-window\/.*$/
       ],
     },
   },
