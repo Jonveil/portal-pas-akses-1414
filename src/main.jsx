@@ -4,8 +4,6 @@ import App from "./App";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import "./index.css";
 
-// Nota: Baris import "./index.css" telah dibuang sebab fail tu tak ada.
-
 // Chain ID World Chain = 480
 const activeChain = 480; 
 
@@ -16,7 +14,8 @@ root.render(
   <React.StrictMode>
     <ThirdwebProvider 
       activeChain={activeChain} 
-      clientId={import.meta.env.VITE_TEMPLATE_CLIENT_ID}
+      // 👇 KITA LETAK TERUS ID DI SINI (Jalan Pintas)
+      clientId="b25286cc43a81f0ecab40b732a0d462c"
     >
       <App />
     </ThirdwebProvider>
