@@ -2,10 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: "/portal-pas-akses-1414/", // WAJIB untuk GitHub Pages
+  // base: "/portal-pas-akses-1414/",  <-- JANGAN ADA BARIS INI UNTUK RENDER
   plugins: [react()],
   define: {
-    global: "window",
+    global: "window",      // Ini BAGUS (Wajib untuk Web3/Wallet)
     "process.env": {},
   },
   resolve: {
