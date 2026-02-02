@@ -7,6 +7,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@safe-global/safe-core-sdk": "*",
+    "@safe-global/safe-ethers-adapters": "*",
+    "@safe-global/safe-service-client": "*",
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^4.0.99",
     "@thirdweb-dev/chains": "^0.1.77",
