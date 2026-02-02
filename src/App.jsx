@@ -1,38 +1,35 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import "./index.css";
+import React from 'react';
+import './App.css';
 
-export default function App() {
+function App() {
   return (
-    <div className="container">
-      <main className="main">
-        <h1 className="title">
-          Selamat Datang ke <br />
-          <span className="gradient-text">PORTAL 1414</span>
-        </h1>
+    <div className="app-container">
+      <header>
+        <h1>Welcome to PORTAL 1414</h1>
+        <p>Digital Access Pass System & Special Community</p>
+      </header>
 
-        <p className="description">
-          Sistem Akses Pas Digital & Komuniti Khas
-        </p>
-
-        <div className="connect-box">
-          <ConnectWallet 
-            theme="dark"
-            btnTitle="Sambung Wallet"
-          />
-        </div>
+      <main>
+        {/* Butang Wallet Connect DIBUANG seperti diminta */}
         
-        <div className="grid">
-          <div className="card">
-            <h2>🦊 Semak Pas &rarr;</h2>
-            <p>Lihat status keahlian Kitsune anda.</p>
+        <div className="menu-grid">
+          <div className="card" onClick={() => alert("Check Pass Feature Coming Soon!")}>
+            <h2>🦊 Check Pass <span>&rarr;</span></h2>
+            <p>View your Kitsune membership status.</p>
           </div>
 
-          <div className="card">
-            <h2>🗳️ Undian &rarr;</h2>
-            <p>Sertai keputusan komuniti (DAO).</p>
+          <div className="card" onClick={() => alert("Voting Feature Coming Soon!")}>
+            <h2>🗳️ Vote (DAO) <span>&rarr;</span></h2>
+            <p>Join community decisions.</p>
           </div>
         </div>
       </main>
+      
+      <footer>
+        <p>&copy; 2026 Portal 1414. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
+
+export default App;
