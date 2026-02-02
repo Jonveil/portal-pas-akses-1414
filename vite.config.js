@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  // 👇 INI BAHAGIAN PALING PENTING UNTUK ELAK SKRIN GELAP
+  // 👇 INI YANG PALING PENTING (Menghidupkan Thirdweb)
   define: {
     "global": "window",
     "process.env": {},
@@ -14,7 +14,6 @@ export default defineConfig({
       util: "util",
     },
   },
-  // 👆 TAMAT BAHAGIAN PENTING
   build: {
     rollupOptions: {
       external: [
