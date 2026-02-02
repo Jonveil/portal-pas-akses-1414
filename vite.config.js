@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+  base: "/portal-pas-akses-1414/", // WAJIB untuk GitHub Pages
   plugins: [react()],
-  // 👇 INI YANG PALING PENTING (Menghidupkan Thirdweb)
   define: {
-    "global": "window",
+    global: "window",
     "process.env": {},
   },
   resolve: {
@@ -18,7 +18,7 @@ export default defineConfig({
     rollupOptions: {
       external: [
         /^@safe-global\/.*$/,
-        /^@safe-window\/.*$/
+        /^@safe-window\/.*$/,
       ],
     },
   },
