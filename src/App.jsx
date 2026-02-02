@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 
 function App() {
-  // State untuk kesan masuk (Login Effect)
   const [entered, setEntered] = useState(false);
 
-  // --- GAYA/STYLE (TEMA MERAH & HITAM) ---
+  // --- STYLE ---
   const styles = {
     container: {
       backgroundColor: 'black',
@@ -17,24 +16,23 @@ function App() {
       fontFamily: "'Courier New', Courier, monospace",
       textAlign: 'center',
       padding: '20px',
-      overflow: 'hidden', // Elak scroll
+      overflow: 'hidden',
     },
     logoContainer: {
       marginBottom: '20px',
       position: 'relative',
     },
-        catImage: {
+    catImage: {
       width: '180px',
       height: '180px',
       borderRadius: '50%',
       border: '4px solid #ff0000',
       boxShadow: '0 0 25px #ff0000',
       objectFit: 'cover',
-      // --- INI PENAMBAHAN BARU ---
-      transform: 'rotate(-15deg) scale(1.2)', // Pusing kiri 15 darjah & zoom sikit
-      transition: 'transform 0.5s ease',      // Biar nampak smooth kalau bergerak
-    },
-    
+      // --- KUCING TEGAK (PUSING KIRI SIKIT) ---
+      transform: 'rotate(-10deg) scale(1.1)', 
+      transition: 'transform 0.5s ease',
+      backgroundColor: '#111',
     },
     title: {
       fontSize: '2.5rem',
@@ -52,22 +50,6 @@ function App() {
       marginBottom: '40px',
       textTransform: 'uppercase',
     },
-    statusBox: {
-      border: '1px solid #333',
-      padding: '15px 30px',
-      borderRadius: '10px',
-      backgroundColor: '#0a0a0a',
-      marginBottom: '40px',
-      boxShadow: '0 5px 15px rgba(0,0,0,0.5)',
-      display: 'inline-block',
-    },
-    statusValue: {
-      color: '#ff0000',
-      fontSize: '1.2rem',
-      fontWeight: 'bold',
-      textShadow: '0 0 8px #ff0000',
-      margin: 0,
-    },
     enterButton: {
       backgroundColor: '#ff0000',
       color: 'white',
@@ -82,76 +64,116 @@ function App() {
       letterSpacing: '2px',
       marginTop: '10px',
     },
-    // Gaya untuk halaman "SOON"
-    soonContainer: {
-      animation: 'fadeIn 1s ease-in',
-      border: '2px solid #ff0000',
-      padding: '40px',
-      borderRadius: '20px',
-      boxShadow: '0 0 30px #ff0000',
-      backgroundColor: '#111',
+    // Styles untuk Halaman Dalam
+    innerContainer: {
+      width: '100%',
+      maxWidth: '400px',
+      animation: 'fadeIn 0.5s ease-in',
     },
-    soonText: {
-      fontSize: '4rem',
-      color: '#ff0000',
+    nftCard: {
+      border: '1px solid #333',
+      backgroundColor: '#111',
+      borderRadius: '15px',
+      padding: '20px',
+      marginTop: '30px',
+      boxShadow: '0 10px 30px rgba(255, 0, 0, 0.1)',
+    },
+    nftTitle: {
+      color: 'white',
+      fontSize: '1.2rem',
+      marginBottom: '10px',
       fontWeight: 'bold',
-      textShadow: '0 0 20px #ff0000',
-      margin: 0,
+    },
+    nftDesc: {
+      color: '#888',
+      fontSize: '0.8rem',
+      marginBottom: '20px',
+    },
+    claimButton: {
+      backgroundColor: 'white',
+      color: 'black',
+      border: 'none',
+      padding: '12px 30px',
+      borderRadius: '25px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      textDecoration: 'none',
+      display: 'inline-block',
+      width: '100%',
     }
   };
 
-  // --- SKRIN 2: HALAMAN "SOON" (LEPAS MASUK) ---
+  // --- HALAMAN DALAM (DASHBOARD) ---
   if (entered) {
     return (
       <div style={styles.container}>
-        <div style={styles.soonContainer}>
-          <h1 style={styles.soonText}>SOON</h1>
-          <p style={{marginTop: '20px', color: '#666', letterSpacing: '2px'}}>
-            SYSTEM INITIALIZING...
-          </p>
+        <div style={styles.innerContainer}>
+          <h1 style={{color: '#ff0000', fontSize: '2rem'}}>WELCOME AGENT</h1>
+          <p style={{color: '#666', marginBottom: '40px'}}>ID: 1414-ACCESS-GRANTED</p>
+
+          {/* KOTAK NFT ZORA (FREE CLAIM) */}
+          <div style={styles.nftCard}>
+            <div style={{
+              width: '100%', height: '150px', backgroundColor: '#222', 
+              borderRadius: '10px', marginBottom: '15px', 
+              backgroundImage: 'url(/alduin.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'
+            }}></div>
+            
+            <h3 style={styles.nftTitle}>GENESIS PASS (FREE)</h3>
+            <p style={styles.nftDesc}>
+              Limited to 1414 Agents only. <br/>
+              Minted on Optimism Network.
+            </p>
+            
+            {/* LINK ZORA AKAN DILETAK DI SINI NANTI */}
+            <a href="https://zora.co" target="_blank" rel="noreferrer" style={styles.claimButton}>
+              MINT NOW &rarr;
+            </a>
+          </div>
+
+          <button 
+            onClick={() => setEntered(false)}
+            style={{marginTop: '30px', background: 'none', border: 'none', color: '#555', cursor: 'pointer'}}
+          >
+            LOGOUT
+          </button>
         </div>
-        
-        {/* Butang kecil untuk keluar balik (optional) */}
-        <button 
-          onClick={() => setEntered(false)}
-          style={{marginTop: '50px', background: 'none', border: '1px solid #333', color: '#555', padding: '10px 20px', borderRadius: '20px', cursor: 'pointer'}}
-        >
-          &larr; LOGOUT
-        </button>
       </div>
     );
   }
 
-  // --- SKRIN 1: HALAMAN UTAMA (LANDING PAGE) ---
+  // --- HALAMAN DEPAN (COVER) ---
   return (
     <div style={styles.container}>
       <div style={styles.logoContainer}>
-        {/* Gambar Alduin dipanggil dari folder public (root) */}
         <img 
           src="/alduin.jpg" 
           alt="Agent 1414" 
           style={styles.catImage}
-          onError={(e) => {e.target.style.display='none'}} // Kalau gambar tak jumpa, dia hilang (tak ada icon rosak)
+          onError={(e) => {e.target.style.display='none'}} 
         />
       </div>
 
       <h1 style={styles.title}>PORTAL 1414</h1>
       <p style={styles.subtitle}>The Gate Opens</p>
 
-      <div style={styles.statusBox}>
+      <div style={{
+        border: '1px solid #333', padding: '15px 30px', borderRadius: '10px', 
+        backgroundColor: '#0a0a0a', marginBottom: '40px', 
+        boxShadow: '0 5px 15px rgba(0,0,0,0.5)'
+      }}>
         <p style={{color:'#555', fontSize:'0.7rem', margin:'0 0 5px 0'}}>STATUS</p>
-        <p style={styles.statusValue}>POWER UNLOCKS</p>
+        <p style={{color: '#ff0000', fontSize: '1.2rem', fontWeight: 'bold', margin: 0, textShadow: '0 0 8px #ff0000'}}>
+          POWER UNLOCKS
+        </p>
       </div>
 
-      <button 
-        style={styles.enterButton}
-        onClick={() => setEntered(true)} // Tekan ni terus tukar state jadi "entered"
-      >
+      <button style={styles.enterButton} onClick={() => setEntered(true)}>
         ENTER PORTAL
       </button>
 
       <footer style={{ marginTop: '60px', color: '#333', fontSize: '0.7rem' }}>
-        &copy; 2026 1414 Corp. Secure Access.
+        &copy; 2026 1414 Corp.
       </footer>
     </div>
   );
