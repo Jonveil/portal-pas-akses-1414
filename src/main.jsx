@@ -2,11 +2,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import "./index.css";
 
-// Kita tak payah import WorldChain. Kita guna ID dia je terus.
+// Nota: Baris import "./index.css" telah dibuang sebab fail tu tak ada.
+
 // Chain ID World Chain = 480
-
 const activeChain = 480; 
 
 const container = document.getElementById("root");
