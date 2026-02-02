@@ -23,14 +23,18 @@ function App() {
       marginBottom: '20px',
       position: 'relative',
     },
-    catImage: {
-      width: '180px',       // Besar sikit supaya jelas
-      height: '180px',      // Sama tinggi & lebar supaya bulat cantik
+        catImage: {
+      width: '180px',
+      height: '180px',
       borderRadius: '50%',
       border: '4px solid #ff0000',
-      boxShadow: '0 0 25px #ff0000', // Glow merah
-      objectFit: 'cover',   // PENTING: Ini elak gambar jadi senget/lonjong
-      backgroundColor: '#333', // Warna belakang kalau gambar loading
+      boxShadow: '0 0 25px #ff0000',
+      objectFit: 'cover',
+      // --- INI PENAMBAHAN BARU ---
+      transform: 'rotate(-15deg) scale(1.2)', // Pusing kiri 15 darjah & zoom sikit
+      transition: 'transform 0.5s ease',      // Biar nampak smooth kalau bergerak
+    },
+    
     },
     title: {
       fontSize: '2.5rem',
