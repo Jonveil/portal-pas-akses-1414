@@ -5,30 +5,31 @@ export default function App() {
   return (
     <div className="container">
       <main className="main">
-        <div className="content">
-          <h1 className="title">
-            Portal <span className="gradient-text">1414</span>
-          </h1>
+        <h1 className="title">
+          Selamat Datang ke <br />
+          <span className="gradient-text">PORTAL 1414</span>
+        </h1>
 
-          <p className="description">
-            Sistem Akses Pas Digital & Komuniti
-          </p>
+        <p className="description">
+          Sistem Akses Pas Digital & Komuniti Khas
+        </p>
 
-          <div className="connect-btn">
-            <ConnectWallet 
-              dropdownPosition={{
-                side: "bottom",
-                align: "center",
-              }}
-              theme="dark"
-            />
+        <div className="connect-box">
+          <ConnectWallet 
+            theme="dark"
+            btnTitle="Sambung Wallet"
+          />
+        </div>
+        
+        <div className="grid">
+          <div className="card">
+            <h2>🦊 Semak Pas &rarr;</h2>
+            <p>Lihat status keahlian Kitsune anda.</p>
           </div>
-          
-          <div className="grid">
-            <div className="card">
-              <h3>Status Pas &rarr;</h3>
-              <p>Semak kelayakan akses anda di sini.</p>
-            </div>
+
+          <div className="card">
+            <h2>🗳️ Undian &rarr;</h2>
+            <p>Sertai keputusan komuniti (DAO).</p>
           </div>
         </div>
       </main>
