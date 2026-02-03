@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 
 function App() {
   const [entered, setEntered] = useState(false);
-  const [verifiedForClaim, setVerifiedForClaim] = useState(false);
 
   // Thirdweb mint link
   const MINT_LINK = "https://thirdweb.com/world-chain/0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
-
-  // World ID config
-  const APP_ID = "app_7147fcca529b9e4c5181157a356d9378";
-  const ACTION_CLAIM_NFT = "551f41cf-e2ba-4a75-b4e9-d4fc57af3409";
 
   const styles = {
     container: {
@@ -111,26 +105,6 @@ function App() {
       marginTop: '20px',
       textTransform: 'uppercase',
       letterSpacing: '1px',
-    },
-    verifyButton: {
-      backgroundColor: '#ff0000',
-      color: 'white',
-      border: 'none',
-      padding: '12px 0',
-      width: '100%',
-      borderRadius: '30px',
-      fontWeight: 'bold',
-      fontSize: '0.9rem',
-      cursor: 'pointer',
-      marginTop: '15px',
-      textTransform: 'uppercase',
-      letterSpacing: '1px',
-    },
-    smallText: {
-      color: '#666',
-      fontSize: '0.7rem',
-      marginTop: '8px',
-      letterSpacing: '1px',
     }
   };
 
@@ -149,38 +123,13 @@ function App() {
             <h3 style={{color:'white', margin:'0 0 5px 0', fontSize:'1.4rem'}}>GENESIS PASS</h3>
             <p style={{color:'#666', fontSize:'0.8rem', margin:0}}>Official World Chain Pass • Free</p>
 
-            {/* VERIFY TO CLAIM */}
-            {!verifiedForClaim && (
-              <>
-                <IDKitWidget
-                  app_id={APP_ID}
-                  action={ACTION_CLAIM_NFT}
-                  verification_level={VerificationLevel.Orb}
-                  onSuccess={() => setVerifiedForClaim(true)}
-                >
-                  {({ open }) => (
-                    <button type="button" onClick={open} style={styles.verifyButton}>
-                      VERIFY TO CLAIM
-                    </button>
-                  )}
-                </IDKitWidget>
-                <p style={styles.smallText}>Verification required before claiming.</p>
-              </>
-            )}
-
-            {/* CLAIM BUTTON */}
-            {verifiedForClaim && (
-              <a href={MINT_LINK} target="_blank" rel="noreferrer" style={styles.claimButton}>
-                CLAIM NFT →
-              </a>
-            )}
+            <a href={MINT_LINK} target="_blank" rel="noreferrer" style={styles.claimButton}>
+              CLAIM NFT →
+            </a>
           </div>
 
           <button
-            onClick={() => {
-              setEntered(false);
-              setVerifiedForClaim(false);
-            }}
+            onClick={() => setEntered(false)}
             style={{
               marginTop: '50px',
               background: 'none',
@@ -214,7 +163,6 @@ function App() {
         <p style={{color: '#ff0000', fontSize: '1.2rem', fontWeight: 'bold', margin: 0, textShadow: '0 0 8px #ff0000'}}>ONLINE</p>
       </div>
 
-      {/* ENTER TANPA VERIFY */}
       <button style={styles.enterButton} onClick={() => setEntered(true)}>
         ENTER
       </button>
