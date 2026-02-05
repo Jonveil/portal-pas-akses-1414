@@ -13,8 +13,9 @@ export default defineConfig({
     alias: {
       process: 'process/browser',
       stream: 'stream-browserify',
-      zlib: 'browserify-zlib',
       util: 'util',
+      buffer: 'buffer',
+      // zlib tak perlu kalau tak guna compression
     },
   },
 
@@ -24,11 +25,8 @@ export default defineConfig({
       external: [
         /^@safe-global\/.*$/,
         /^@walletconnect\/.*$/,
-        'buffer',
         'crypto',
         'events',
-        'stream',
-        'util',
       ],
     },
     commonjsOptions: {
