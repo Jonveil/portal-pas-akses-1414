@@ -22,13 +22,12 @@ function App() {
           alert("✅ Claim berjaya! Tx: " + data.transactionHash);
         },
         onError: (err) => {
-          alert("❌ Claim gagal: " + (err.message || "Cuba lagi"));
+          alert("❌ Claim gagal: " + (err.message || "Cuba lagi nanti"));
         },
       }
     );
   };
 
-  // Styles kau yang lama (copy-paste dari kod lama kau)
   const styles = {
     container: {
       backgroundColor: 'black',
@@ -158,7 +157,7 @@ function App() {
             </p>
 
             {!address ? (
-              <ConnectWallet />
+              <ConnectWallet />   {/* ← Betulkan huruf besar */}
             ) : (
               <button
                 onClick={handleClaim}
@@ -194,7 +193,6 @@ function App() {
     );
   }
 
-  // Halaman luar (masuk)
   return (
     <div style={styles.container}>
       <div style={styles.logoContainer}>
