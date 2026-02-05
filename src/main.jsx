@@ -4,7 +4,7 @@ import App from "./App";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import "./index.css";
 
-// Define World Chain manually
+// World Chain manual config (chain ID 480)
 const worldChain = {
   chainId: 480,
   rpc: ["https://worldchain-mainnet.g.alchemy.com/public"],
@@ -17,10 +17,7 @@ const worldChain = {
   testnet: false,
 };
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-
-root.render(
+createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThirdwebProvider
       clientId="b25286cc43a81f0ecab40b732a0d462c"
