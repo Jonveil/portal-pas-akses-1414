@@ -18,18 +18,6 @@ export default defineConfig({
     },
   },
 
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'es2020',
-    },
-    include: [
-      '@thirdweb-dev/react',
-      '@thirdweb-dev/sdk',
-      '@thirdweb-dev/wallets',
-      'ethers',
-    ],
-  },
-
   build: {
     target: 'es2020',
     rollupOptions: {
