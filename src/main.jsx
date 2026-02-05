@@ -1,33 +1,40 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { ThirdwebProvider } from "thirdweb/react";
+import { defineChain } from "thirdweb/chains"; // <--- tambah import ni
 import "./index.css";
 
-// 👇 Kita definisikan World Chain secara manual supaya tak ada isu "Unknown Chain"
-const worldChainConfig = {
-  chainId: 480,
-  rpc: ["https://worldchain-mainnet.g.alchemy.com/public"], // RPC Public
+// Define World Chain
+const worldChain = defineChain({
+  id: 480,
+  name: "World Chain",
+  rpcUrls: {
+    default: {
+      http: ["https://worldchain-mainnet.g.alchemy.com/public"],
+    },
+  },
   nativeCurrency: {
-    decimals: 18,
     name: "Ether",
     symbol: "ETH",
+    decimals: 18,
   },
-  shortName: "world",
-  slug: "world-chain",
-  testnet: false,
-  chain: "World Chain",
-  name: "World Chain",
-};
+  blockExplorers: {
+    default: {
+      name: "World Chain Explorer",
+      url: "https://worldscan.org",
+    },
+  },
+});
 
 const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <ThirdwebProvider 
-      activeChain={worldChainConfig} 
-      clientId="b25286cc43a81f0ecab40b732a0d462c" // ID Tuan (Hardcoded)
+    <ThirdwebProvider
+      clientId="b25286cc43a81f0ecab40b732a0d462c"
+      chain={worldChain}
     >
       <App />
     </ThirdwebProvider>
