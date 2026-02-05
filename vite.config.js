@@ -1,25 +1,50 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // base: "/portal-pas-akses-1414/",  <-- JANGAN ADA BARIS INI UNTUK RENDER
   plugins: [react()],
+
   define: {
-    global: "window",      // Ini BAGUS (Wajib untuk Web3/Wallet)
-    "process.env": {},
+    global: 'window',
+    'process.env': {},
   },
+
   resolve: {
     alias: {
-      process: "process/browser",
-      util: "util",
+      process: 'process/browser',
+      stream: 'stream-browserify',
+      zlib: 'browserify-zlib',
+      util: 'util',
     },
   },
+
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020',
+    },
+    include: [
+      '@thirdweb-dev/react',
+      '@thirdweb-dev/sdk',
+      '@thirdweb-dev/wallets',
+      'ethers',
+    ],
+  },
+
   build: {
+    target: 'es2020',
     rollupOptions: {
       external: [
         /^@safe-global\/.*$/,
-        /^@safe-window\/.*$/,
+        /^@walletconnect\/.*$/,
+        'buffer',
+        'crypto',
+        'events',
+        'stream',
+        'util',
       ],
     },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
-});
+})
