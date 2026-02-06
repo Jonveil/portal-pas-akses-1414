@@ -7,17 +7,11 @@ import { ThirdwebProvider } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
 
-import { MiniKit } from "@worldcoin/minikit-js";
-
-MiniKit.init({
-  app_id: "app_7147fcca529b9e4c5181157a356d9378",
-});
-
 const client = createThirdwebClient({
   clientId: "b25286cc43a81f0ecab40b732a0d462c",
 });
 
-const chain = defineChain(480);
+const chain = defineChain(480); // World Chain
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
