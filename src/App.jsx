@@ -27,6 +27,7 @@ export default function App() {
 
   // World App auto session
   const account = useActiveAccount();
+console.log("🔥 Active account:", account);
 
   const handleClaim = async () => {
     try {
