@@ -3,29 +3,29 @@ import {
   createThirdwebClient,
   getContract,
 } from "thirdweb";
-import { useActiveAccount, ConnectButton } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { defineChain } from "thirdweb/chains";
 
 const client = createThirdwebClient({
-  clientId: "b25286cc43a81f0ecab40b732a0d462c", // CLIENT ID KAU
+  clientId: "b25286cc43a81f0ecab40b732a0d462c",
 });
 
-const chain = defineChain(480); // WORLD CHAIN
+const chain = defineChain(480); // World Chain
 
 const contract = getContract({
   client,
   chain,
-  address: "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4", // CONTRACT NFT KAU
+  address: "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4",
 });
 
 export default function App() {
   const [entered, setEntered] = useState(false);
   const [claiming, setClaiming] = useState(false);
-  const account = useActiveAccount();
+  const account = useActiveAccount(); // World App auto session
 
   const handleClaim = async () => {
     if (!account) {
-      alert("Sila connect wallet dulu!");
+      alert("Sila buka Mini App dalam World App untuk claim.");
       return;
     }
 
@@ -34,9 +34,9 @@ export default function App() {
 
       const tx = await contract.erc721.claim(1);
 
-      alert("✅ Claim berjaya!\nTx Hash: " + tx.transactionHash);
+      alert("Claim berjaya! Tx Hash: " + tx.transactionHash);
     } catch (err) {
-      alert("❌ Claim gagal: " + err.message);
+      alert("Claim gagal: " + err.message);
     } finally {
       setClaiming(false);
     }
@@ -134,27 +134,23 @@ export default function App() {
               World Chain Access Pass • Free
             </p>
 
-            {!account ? (
-              <ConnectButton client={client} chain={chain} />
-            ) : (
-              <button
-                onClick={handleClaim}
-                disabled={claiming}
-                style={{
-                  width: "100%",
-                  padding: "15px",
-                  borderRadius: "30px",
-                  border: "none",
-                  marginTop: "20px",
-                  backgroundColor: claiming ? "#444" : "white",
-                  color: claiming ? "#999" : "black",
-                  fontWeight: "bold",
-                  cursor: "pointer",
-                }}
-              >
-                {claiming ? "CLAIMING..." : "CLAIM NFT →"}
-              </button>
-            )}
+            <button
+              onClick={handleClaim}
+              disabled={claiming}
+              style={{
+                width: "100%",
+                padding: "15px",
+                borderRadius: "30px",
+                border: "none",
+                marginTop: "20px",
+                backgroundColor: claiming ? "#444" : "white",
+                color: claiming ? "#999" : "black",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {claiming ? "CLAIMING..." : "CLAIM NFT →"}
+            </button>
           </div>
 
           <button
