@@ -5,7 +5,6 @@ import {
 } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { defineChain } from "thirdweb/chains";
-import { MiniKit } from "@worldcoin/minikit-js";
 
 // Thirdweb client
 const client = createThirdwebClient({
@@ -38,17 +37,10 @@ export default function App() {
         return;
       }
 
-      // Prepare encoded transaction
-      const tx = await contract.erc721.claim.prepare(1);
+      // Claim NFT (World App akan sign automatik)
+      const tx = await contract.erc721.claim(1);
 
-      // Ask World App to sign
-      const result = await MiniKit.wallet.sendTransaction({
-        to: tx.to,
-        data: tx.data,
-        value: "0",
-      });
-
-      alert("Claim berjaya! Tx Hash: " + result.transaction_hash);
+      alert("Claim berjaya! Tx Hash: " + tx.transactionHash);
     } catch (err) {
       alert("Claim gagal: " + err.message);
     } finally {
