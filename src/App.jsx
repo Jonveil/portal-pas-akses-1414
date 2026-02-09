@@ -27,8 +27,9 @@ export default function App() {
 
   // World App auto session
   const account = useActiveAccount();
-console.log("🔥 Active account:", account);
+  console.log("🔥 Active account:", account);
 
+  // CLAIM NFT — direct mint (World App signs in-app)
   const handleClaim = async () => {
     try {
       setClaiming(true);
@@ -38,8 +39,11 @@ console.log("🔥 Active account:", account);
         return;
       }
 
-      // Claim NFT (World App akan sign automatik)
-      const tx = await contract.erc721.claim(1);
+      const tx = await contract.erc721.mintTo(account.address, {
+        name: "Genesis Pass",
+        description: "World Chain Access Pass",
+        image: "/alduin.jpg",
+      });
 
       alert("Claim berjaya! Tx Hash: " + tx.transactionHash);
     } catch (err) {
