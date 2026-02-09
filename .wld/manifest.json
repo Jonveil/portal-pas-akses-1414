@@ -1,0 +1,13 @@
+{
+  "name": "Portal 1414",
+  "description": "Genesis Pass Claim Portal",
+  "icon": "/alduin.jpg",
+  "url": "https://portal-1414.vercel.app",
+  "actions": [
+    {
+      "name": "claim",
+      "description": "Claim Genesis Pass NFT",
+      "type": "transaction"
+    }
+  ]
+}
