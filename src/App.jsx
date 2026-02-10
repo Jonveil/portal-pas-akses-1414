@@ -1,51 +1,45 @@
 import React, { useState } from "react";
-import {
-  createThirdwebClient,
-  getContract,
-} from "thirdweb";
-import { useActiveAccount } from "thirdweb/react";
-import { defineChain } from "thirdweb/chains";
-
-// Thirdweb client
-const client = createThirdwebClient({
-  clientId: "b25286cc43a81f0ecab40b732a0d462c",
-});
-
-// World Chain
-const chain = defineChain(480);
-
-// Contract
-const contract = getContract({
-  client,
-  chain,
-  address: "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4",
-});
+import { useMiniKit } from "@worldcoin/minikit-react";
+import { ethers } from "ethers";
 
 export default function App() {
   const [entered, setEntered] = useState(false);
   const [claiming, setClaiming] = useState(false);
 
-  // World App auto session
-  const account = useActiveAccount();
-  console.log("🔥 Active account:", account);
+  const { sendTransaction, walletAddress } = useMiniKit();
 
-  // CLAIM NFT — direct mint (World App signs in-app)
   const handleClaim = async () => {
     try {
       setClaiming(true);
 
-      if (!account) {
+      if (!walletAddress) {
         alert("Sila buka Mini App dalam World App untuk claim.");
         return;
       }
 
-      const tx = await contract.erc721.mintTo(account.address, {
-        name: "Genesis Pass",
-        description: "World Chain Access Pass",
-        image: "/alduin.jpg",
+      const contract = "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
+
+      const abi = [
+        "function claim(address _receiver, uint256 _quantity, address _currency, uint256 _pricePerToken, (bytes32[] proof, uint256 quantityLimitPerWallet, uint256 pricePerToken, address currency) _allowlistProof, bytes _data)"
+      ];
+
+      const iface = new ethers.utils.Interface(abi);
+
+      const data = iface.encodeFunctionData("claim", [
+        walletAddress,
+        1,
+        "0x0000000000000000000000000000000000000000",
+        0,
+        [[], 0, 0, "0x0000000000000000000000000000000000000000"],
+        "0x"
+      ]);
+
+      await sendTransaction({
+        to: contract,
+        data: data
       });
 
-      alert("Claim berjaya! Tx Hash: " + tx.transactionHash);
+      alert("Claim berjaya! Sila semak wallet anda.");
     } catch (err) {
       alert("Claim gagal: " + err.message);
     } finally {
