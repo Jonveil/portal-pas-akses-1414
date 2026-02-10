@@ -1,0 +1,95 @@
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import ABI from "./abi.json"; // letak ABI kau
+
+const CONTRACT = "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
+const ZERO = "0x0000000000000000000000000000000000000000";
+const MAX_SUPPLY = 1414;
+
+export default function ClaimNFT() {
+  const [loading, setLoading] = useState(true);
+  const [claimed, setClaimed] = useState(false);
+  const [supply, setSupply] = useState(0);
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  async function init() {
+    try {
+      if (!window.ethereum) return;
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      setUser(address);
+
+      const contract = new ethers.Contract(CONTRACT, ABI, signer);
+
+      const bal = await contract.balanceOf(address);
+      const total = await contract.totalSupply();
+
+      setClaimed(bal > 0);
+      setSupply(Number(total));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function claim() {
+    try {
+      setLoading(true);
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT, ABI, signer);
+
+      const tx = await contract.claim(
+        user,
+        1,
+        ZERO,
+        0,
+        {
+          proof: [],
+          quantityLimitPerWallet: 0,
+          pricePerToken: 0,
+          currency: ZERO
+        },
+        "0x"
+      );
+
+      await tx.wait();
+
+      setClaimed(true);
+      setSupply(supply + 1);
+    } catch (err) {
+      console.error(err);
+      alert("Claim failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h2>Portal 1414 Access Pass</h2>
+      <p>{supply} / {MAX_SUPPLY} claimed</p>
+
+      {claimed ? (
+        <div>
+          <p>You already claimed your NFT 🎉</p>
+          <p>Wallet: {user}</p>
+        </div>
+      ) : (
+        <button onClick={claim} style={{ padding: 12, fontSize: 18 }}>
+          Claim NFT
+        </button>
+      )}
+    </div>
+  );
+}
