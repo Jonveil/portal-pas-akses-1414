@@ -10,8 +10,8 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@worldcoin/minikit-react": "0.0.14",
-    "@worldcoin/minikit-js": "0.0.14",
+    "@worldcoin/minikit-react": "0.0.12",
+    "@worldcoin/minikit-js": "0.0.12",
     "ethers": "^6.12.0"
   },
   "devDependencies": {
