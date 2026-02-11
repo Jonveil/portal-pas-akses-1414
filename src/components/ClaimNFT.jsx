@@ -6,8 +6,7 @@ const CONTRACT = "0xa72DABf4F0f4Ce102D17B006e4CCB34EC74351D4";
 const ZERO = "0x0000000000000000000000000000000000000000";
 const MAX_SUPPLY = 1414;
 
-// Gambar NFT (boleh tukar)
-const NFT_IMAGE = "https://i.imgur.com/1Q9Z1Zm.png"; // contoh
+const NFT_IMAGE = "/nft.jpg";
 
 export default function ClaimNFT() {
   const [loading, setLoading] = useState(true);
